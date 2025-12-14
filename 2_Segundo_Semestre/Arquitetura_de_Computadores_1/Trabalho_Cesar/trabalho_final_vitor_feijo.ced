@@ -1,0 +1,1329 @@
+;Trabalho Cesar versão 2
+
+
+
+
+;==========================================================================
+; Área Reservada
+
+
+                org                h7f00
+STACK:
+
+
+; Acesso em 16 bits
+                org                hff80
+                daw                [31]                ; Área reservada
+IVET:        dw                0                        ; Vetor de interrupção
+
+
+; Acesso em 8 bits
+                dab                [23]
+TIMDT:        db                0
+INTS:        db                0                        ; INTERRUPT STATUS: IP x x x . x x IPStec IPStim
+INTE:        db                0                        ; INTERRUPT ENABLE: IE x x x . x x IEStec IEStim
+TECST:        db                0                        ; Status do teclado
+TECDT:        db                0                        ; Dado do teclado
+VISOR:        dab                [36]                ; Portas de acesso ao visor
+
+
+;Valores na memoria
+org h8000
+
+
+
+
+robo1: dw 0
+xRobo1: dw 0
+yRobo1: dw 0
+vxRobo1: dw 0
+vyRobo1: dw 0
+NomeRobo1: dab 'ROBO1'
+
+
+
+
+robo2: dw 0
+xRobo2: dw 0
+yRobo2: dw 0
+vxRobo2: dw 0
+vyRobo2: dw 0
+NomeRobo2: dab 'ROBO2'
+
+
+robo3: dw 0
+xRobo3: dw 0
+yRobo3: dw 0
+vxRobo3: dw 0
+vyRobo3: dw 0
+NomeRobo3: dab 'ROBO3'
+
+
+robo4: dw 0
+xRobo4: dw 0
+yRobo4: dw 0
+vxRobo4: dw 0
+vyRobo4: dw 0
+NomeRobo4: dab 'ROBO4'
+
+
+stringRobox: dab '0000'
+stringRoboy: dab '0000'
+stringRobovx: dab '00'
+stringRobovy: dab '00'
+
+
+;0 - nenhum robo ligado
+;1 - robo 1
+;1 - robo 2
+;1 - robo 3
+;1 - robo 4
+RoboFoco: dw 0 
+
+
+RobosParados: dab 'ROBOS PARADOS'
+FraseNomeRobo1: dab 'NOME DO ROBO 1: '
+FraseNomeRobo2: dab 'NOME DO ROBO 2: '
+FraseNomeRobo3: dab 'NOME DO ROBO 3: '
+FraseNomeRobo4: dab 'NOME DO ROBO 4: '
+
+
+decimos: dw 0
+umsegundo: dw 0
+
+doisdecimos: dw 0
+doissegundo: dw 0
+
+NAOHAROBOSLIVRES: dab 'NAO HA ROBOS LIVRES'
+
+Tecla: dw -1
+
+teclaPressionada: dw 0
+contadorLetras: dw 0
+
+
+
+
+
+
+
+;==========================================================================
+; Programa Principal
+org 0
+
+
+MOV #STACK, R6
+
+
+;Limpeza das variaveis
+CLR robo1
+CLR robo2
+CLR robo3
+CLR robo4
+
+
+CLR umsegundo
+
+
+MOV #-1, R5
+
+
+
+
+;Setando as interrupções
+
+
+CLR TECST
+CLR TECDT
+CLR INTS
+
+
+MOV #h83, INTE 
+MOV #rotinainterrupcao, IVET
+MOV #100, TIMDT
+
+
+
+
+; LOOP MAIN
+
+
+loopmain:
+
+
+JSR R7, TestaRobosDesativados ;Se todos os robos estiverem desativados 
+                              ;escreve robos parados
+
+
+
+
+JSR R7, DigitacaoNomeRobo ;Se a tecla N ou n for digitada aciona um robo
+
+
+JSR R7, RoboFocado ;Verifica qual o robo focado
+
+
+
+JSR R7, InfoRobos  
+
+JSR R7,  ImputTeclado
+
+JSR R7, funcaoDeslocamento
+
+
+BR loopmain
+HLT
+
+
+
+
+
+
+
+
+
+
+;;------------------------------------------------
+
+
+; Minhas Funções
+
+
+; Minhas Funções
+
+; funcao que incrementa os deslocamentos
+funcaoDeslocamento:
+
+;deu um segundo?
+TST umsegundo
+BEQ naopassousegundo
+
+CLR umsegundo
+
+;if (robo1 == 1)
+TST robo1
+BEQ roboDesativado1
+
+;Adiciona o velocidade ao deslocamento
+ADD vxrobo1, xrobo1
+
+;if( deslocamento > 9999) então ele vai até o maximo
+CMP xrobo1, 9999
+BLE roboignoradomaiorx1
+;MOV #9999, xrobo1
+
+roboignoradomaiorx1:
+;if(deslocamento < -9999) então ele vai até o minimo
+CMP xrobo1, -9999
+BGE roboignoradomenorx1
+;MOV #-9999, xrobo1
+
+roboignoradomenorx1:
+
+;Adiciona o velocidade ao deslocamento
+ADD vyrobo1, yrobo1
+
+;if( deslocamento > 9999)
+CMP yrobo1, 9999
+BLE roboignoradomaiory1
+;MOV #9999, yrobo1
+
+
+roboignoradomaiory1:
+;if( deslocamento > -9999)
+CMP yrobo1, -9999
+BGE roboignoradomenory1
+;MOV #-9999, yrobo1
+
+roboignoradomenory1:
+roboDesativado1:
+
+
+naopassousegundo:
+
+RTS R7
+
+
+
+
+
+
+;=============================================================================
+;função que lida com as interrupçoes do teclado do robo focado
+ImputTeclado:
+
+
+;if(robofoco == 1 && robo1 == 1)
+CMP RoboFoco, #1
+BNE SemImput1
+TST robo1
+BEQ SemImput1
+
+MOV #vxrobo1, R3
+JSR R7, ImputWASD
+
+MOV #robo1, R3
+JSR R7, ImputRZ
+
+SemImput1:
+
+;if(robofoco == 2 && robo1 == 2)
+CMP RoboFoco, #2
+BNE SemImput2
+TST robo2
+BEQ SemImput2
+
+MOV #vxrobo2, R3
+JSR R7, ImputWASD
+
+MOV #robo2, R3
+JSR R7, ImputRZ
+
+SemImput2:
+
+;if(robofoco == 3 && robo1 == 3)
+CMP RoboFoco, #3
+BNE SemImput3
+TST robo3
+BEQ SemImput3
+
+MOV #vxrobo3, R3
+JSR R7, ImputWASD
+
+MOV #robo3, R3
+JSR R7, ImputRZ
+
+SemImput3:
+
+;if(robofoco == 4 && robo1 == 4)
+CMP RoboFoco, #4
+BNE SemImput4
+TST robo4
+BEQ SemImput4
+
+MOV #vxrobo4, R3
+JSR R7, ImputWASD
+
+MOV #robo4, R3
+JSR R7, ImputRZ
+
+SemImput4:
+
+RTS R7
+
+
+;++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+;Funcoes adicionais para ImputTeclado
+
+
+;R3 = ‘endereco do vx e vy do robo’
+ImputWASD:
+
+
+;if(R5 == ‘w’ || R5 == ‘W’)
+CMP R5, #'w'
+BEQ continuaW
+CMP R5, #'W'
+BEQ continuaW
+BR SemImputW
+continuaW: ;teve o Imput W
+
+
+;testa se o vy é maior que 99
+cmp 2(R3), #98
+bgt velocidademaximavy
+
+inc r4
+
+CLR R5 ;Limpa a tecla
+INC 2(R3) ;incrementa o Vy
+
+
+velocidademaximavy:
+SemImputW:
+
+
+;if(R5 == ‘a’ || R5 == ‘A’)
+CMP R5, #'a'
+BEQ continuaA
+CMP R5, #'A'
+BEQ continuaA
+BR SemImputA
+continuaA:
+
+;testa se o vx é menor que -99
+cmp (R3), #-98
+blt velocidademinimavx
+
+
+CLR R5 ;Limpa a tecla
+DEC (R3) ;decrementa o Vx
+
+velocidademinimavx:
+SemImputA:
+
+
+;if(R5 == ‘s’ || R5 == ‘S’)
+CMP R5, #'s'
+BEQ continuaS
+CMP R5, #'S'
+BEQ continuaS
+BR SemImputS
+continuaS:
+
+;testa se o vy é menor que -99
+cmp 2(R3), #-98
+blt velocidademinimavy
+
+CLR R5 ;Limpa a tecla
+DEC 2(R3) ;decrementa o Vy
+
+
+
+velocidademinimavy:
+SemImputS:
+
+
+;if(R5 == ‘d’ || R5 == ‘D’)
+CMP R5, #'d'
+BEQ continuaD
+CMP R5, #'D'
+BEQ continuaD
+BR SemImputD
+continuaD:
+
+;testa se o vx é maior que 99
+cmp (R3), #98
+bgt velocidademaximavx
+
+CLR R5 ;Limpa a tecla
+INC (R3) ;incrementa o Vx
+
+
+
+velocidademaximavx:
+SemImputD:
+
+
+RTS R7
+
+
+
+
+;++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+ImputRZ:
+
+
+;if(R5 == ‘r’ || R5 == ‘R’)
+CMP R5, #'r'
+BEQ continuaR
+CMP R5, #'R'
+BEQ continuaR
+BR SemImputR
+continuaR:
+
+
+CLR R5 ;Limpa a tecla
+;desativa o robo, zera velocidades e foca no proximo robo
+CLR (R3)
+CLR 6(R3)
+CLR 8(R3)
+
+TST robo1
+BEQ proximorobo1r
+MOV #1, RoboFoco
+BR Fimr
+
+proximorobo1r:
+TST robo2
+BEQ proximorobo2r
+MOV #2, RoboFoco
+BR Fimr
+
+proximorobo2r:
+TST robo3
+BEQ proximorobo3r
+MOV #3, RoboFoco
+BR Fimr
+
+proximorobo3r:
+TST robo4
+BEQ Fimr
+MOV #4, RoboFoco
+BR Fimr
+
+Fimr:
+
+
+;Limpa visor
+JSR R7, LimpaVisor
+
+SemImputR:
+
+
+
+;if(R5 == ‘z’ || R5 == ‘Z’)
+CMP R5, #'z'
+BEQ continuaZ
+CMP R5, #'Z'
+BEQ continuaZ
+BR SemImputZ
+continuaZ:
+
+
+CLR R5 ;Limpa a tecla
+;zera as velocidades
+CLR 6(R3)
+CLR 8(R3)
+
+SemImputZ:
+
+
+
+RTS R7
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+;=============================================================================
+;função que coloca na tela as informações do robo focado
+InfoRobos:
+
+
+;if(robofoco == 1 && robo1 == 1)
+CMP RoboFoco, #1
+BNE naoFocoRobo1
+TST robo1
+BEQ naoFocoRobo1
+
+
+JSR R7, escreveVisorRobo1
+
+
+naoFocoRobo1:
+
+
+;if(robofoco == 2 && robo1 == 2)
+CMP RoboFoco, #2
+BNE naoFocoRobo2
+TST robo2
+BEQ naoFocoRobo2
+
+
+JSR R7, escreveVisorRobo2
+
+
+naoFocoRobo2:
+
+
+;if(robofoco == 3 && robo1 == 3)
+CMP RoboFoco, #3
+BNE naoFocoRobo3
+TST robo3
+BEQ naoFocoRobo3
+
+
+JSR R7, escreveVisorRobo3
+
+
+naoFocoRobo3:
+
+
+;if(robofoco == 4 && robo1 == 4)
+CMP RoboFoco, #4
+BNE naoFocoRobo4
+TST robo4
+BEQ naoFocoRobo4
+
+
+JSR R7, escreveVisorRobo4
+
+
+naoFocoRobo4:
+
+
+
+
+RTS R7
+
+
+
+
+;++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+;funções auxiliares de InfoRobos:
+
+
+escreveVisorRobo1:
+
+
+MOV	#xRobo1, -(R6)	
+MOV	#stringRobox, -(R6)	
+;JSR	R7, int2str
+ADD	#4, R6
+
+MOV	#yRobo1, -(R6)	
+MOV	#stringRoboy, -(R6)	
+;JSR	R7, int2str
+ADD	#4, R6
+
+MOV	#vxRobo1, -(R6)	
+MOV	#stringRobovx, -(R6)	
+;JSR	R7, int2str
+ADD	#4, R6
+
+MOV	#vyRobo1, -(R6)	
+MOV	#stringRobovy, -(R6)	
+;JSR	R7, int2str
+ADD	#4, R6
+
+
+
+MOV #5, R0      ; tamanho da mensagem (em caracteres)
+MOV #NomeRobo1, R1      ; endereco da mensagem a ser escrita no visor
+MOV #VISOR, R2         ; endereco do LED onde deve iniciar a mensagem
+JSR R7, escreveVisor
+
+
+MOV #'X', 65506
+MOV #':', 65507
+
+MOV #' ', 65508
+
+MOV #4, R0      ; tamanho da mensagem (em caracteres)
+MOV #stringRobox, R1      ; endereco da mensagem a ser escrita no visor
+MOV #VISOR+9, R2         ; endereco do LED onde deve iniciar a mensagem
+JSR R7, escreveVisor
+
+
+
+
+MOV #'Y', 65514
+MOV #':', 65515
+
+MOV #' ', 65516
+
+
+MOV #4, R0      ; tamanho da mensagem (em caracteres)
+MOV #stringRoboy, R1      ; endereco da mensagem a ser escrita no visor
+MOV #VISOR+17, R2         ; endereco do LED onde deve iniciar a mensagem
+JSR R7, escreveVisor
+
+
+MOV #'V', 65522
+MOV #'X', 65523
+MOV #':', 65524
+
+MOV #' ', 65525
+
+MOV #2, R0      ; tamanho da mensagem (em caracteres)
+MOV #stringRobovx, R1      ; endereco da mensagem a ser escrita no visor
+MOV #VISOR+26, R2         ; endereco do LED onde deve iniciar a mensagem
+JSR R7, escreveVisor
+
+
+
+
+MOV #'V', 65529
+MOV #'Y', 65530
+MOV #':', 65531
+
+MOV #' ', 65532
+
+MOV #2, R0      ; tamanho da mensagem (em caracteres)
+MOV #stringRobovy, R1      ; end12111212121211112341ereco da mensagem a ser escrita no visor
+MOV #VISOR+33, R2         ; endereco do LED onde deve iniciar a mensagem
+JSR R7, escreveVisor
+
+
+RTS R7
+
+
+;+++++++++++++++++++
+escreveVisorRobo2:
+
+
+
+MOV #5, R0      ; tamanho da mensagem (em caracteres)
+MOV #NomeRobo2, R1      ; endereco da mensagem a ser escrita no visor
+MOV #VISOR, R2         ; endereco do LED onde deve iniciar a mensagem
+JSR R7, escreveVisor
+
+
+MOV #'X', 65506
+MOV #':', 65507
+
+MOV #' ', 65508
+
+MOV #4, R0      ; tamanho da mensagem (em caracteres)
+MOV #stringRobox, R1      ; endereco da mensagem a ser escrita no visor
+MOV #VISOR+9, R2         ; endereco do LED onde deve iniciar a mensagem
+JSR R7, escreveVisor
+
+
+
+
+MOV #'Y', 65514
+MOV #':', 65515
+
+MOV #' ', 65516
+
+MOV #4, R0      ; tamanho da mensagem (em caracteres)
+MOV #stringRoboy, R1      ; endereco da mensagem a ser escrita no visor
+MOV #VISOR+17, R2         ; endereco do LED onde deve iniciar a mensagem
+JSR R7, escreveVisor
+
+
+MOV #'V', 65522
+MOV #'X', 65523
+MOV #':', 65524
+
+MOV #' ', 65525
+
+MOV #2, R0      ; tamanho da mensagem (em caracteres)
+MOV #stringRobovx, R1      ; endereco da mensagem a ser escrita no visor
+MOV #VISOR+26, R2         ; endereco do LED onde deve iniciar a mensagem
+JSR R7, escreveVisor
+
+
+
+
+MOV #'V', 65529
+MOV #'Y', 65530
+MOV #':', 65531
+
+MOV #' ', 65532
+
+MOV #2, R0      ; tamanho da mensagem (em caracteres)
+MOV #stringRobovy, R1      ; end12111212121211112341ereco da mensagem a ser escrita no visor
+MOV #VISOR+33, R2         ; endereco do LED onde deve iniciar a mensagem
+JSR R7, escreveVisor
+
+
+RTS R7
+
+
+;+++++++++++++++++++
+escreveVisorRobo3:
+
+
+MOV #5, R0      ; tamanho da mensagem (em caracteres)
+MOV #NomeRobo3, R1      ; endereco da mensagem a ser escrita no visor
+MOV #VISOR, R2         ; endereco do LED onde deve iniciar a mensagem
+JSR R7, escreveVisor
+
+
+MOV #'X', 65506
+MOV #':', 65507
+
+MOV #' ', 65508
+
+MOV #4, R0      ; tamanho da mensagem (em caracteres)
+MOV #stringRobox, R1      ; endereco da mensagem a ser escrita no visor
+MOV #VISOR+9, R2         ; endereco do LED onde deve iniciar a mensagem
+JSR R7, escreveVisor
+
+
+
+MOV #'Y', 65514
+MOV #':', 65515
+
+MOV #' ', 65516
+
+MOV #4, R0      ; tamanho da mensagem (em caracteres)
+MOV #stringRoboy, R1      ; endereco da mensagem a ser escrita no visor
+MOV #VISOR+17, R2         ; endereco do LED onde deve iniciar a mensagem
+JSR R7, escreveVisor
+
+
+MOV #'V', 65522
+MOV #'X', 65523
+MOV #':', 65524
+
+MOV #' ', 65525
+
+MOV #2, R0      ; tamanho da mensagem (em caracteres)
+MOV #stringRobovx, R1      ; endereco da mensagem a ser escrita no visor
+MOV #VISOR+26, R2         ; endereco do LED onde deve iniciar a mensagem
+JSR R7, escreveVisor
+
+
+
+
+MOV #'V', 65529
+MOV #'Y', 65530
+MOV #':', 65531
+
+MOV #' ', 65532
+
+MOV #2, R0      ; tamanho da mensagem (em caracteres)
+MOV #stringRobovy, R1      ; end12111212121211112341ereco da mensagem a ser escrita no visor
+MOV #VISOR+33, R2         ; endereco do LED onde deve iniciar a mensagem
+JSR R7, escreveVisor
+
+
+RTS R7
+
+
+;+++++++++++++++++++
+escreveVisorRobo4:
+
+
+
+MOV #5, R0      ; tamanho da mensagem (em caracteres)
+MOV #NomeRobo4, R1      ; endereco da mensagem a ser escrita no visor
+MOV #VISOR, R2         ; endereco do LED onde deve iniciar a mensagem
+JSR R7, escreveVisor
+
+
+MOV #'X', 65506
+MOV #':', 65507
+
+MOV #' ', 65508
+
+MOV #4, R0      ; tamanho da mensagem (em caracteres)
+MOV #stringRobox, R1      ; endereco da mensagem a ser escrita no visor
+MOV #VISOR+9, R2         ; endereco do LED onde deve iniciar a mensagem
+JSR R7, escreveVisor
+
+
+
+
+MOV #'Y', 65514
+MOV #':', 65515
+
+MOV #' ', 65516
+
+MOV #4, R0      ; tamanho da mensagem (em caracteres)
+MOV #stringRoboy, R1      ; endereco da mensagem a ser escrita no visor
+MOV #VISOR+17, R2         ; endereco do LED onde deve iniciar a mensagem
+JSR R7, escreveVisor
+
+
+MOV #'V', 65522
+MOV #'X', 65523
+MOV #':', 65524
+
+MOV #' ', 65525
+
+MOV #2, R0      ; tamanho da mensagem (em caracteres)
+MOV #stringRobovx, R1      ; endereco da mensagem a ser escrita no visor
+MOV #VISOR+26, R2         ; endereco do LED onde deve iniciar a mensagem
+JSR R7, escreveVisor
+
+
+
+
+MOV #'V', 65529
+MOV #'Y', 65530
+MOV #':', 65531
+
+MOV #' ', 65532
+
+MOV #2, R0      ; tamanho da mensagem (em caracteres)
+MOV #stringRobovy, R1      ; end12111212121211112341ereco da mensagem a ser escrita no visor
+MOV #VISOR+33, R2         ; endereco do LED onde deve iniciar a mensagem
+JSR R7, escreveVisor
+
+
+RTS R7
+
+
+
+
+;=============================================================================
+;função que troca o foco do robo caso o numero do robo seja digitado
+RoboFocado:
+
+
+;if (R5 = 1 && robo = 1)
+CMP R5, #'1'
+BNE SemNumero1
+TST robo1
+BEQ SemNumero1
+
+
+
+
+CLR R5
+MOV #1, RoboFoco ;muda o foco do robo
+JSR R7, LimpaVisor
+
+
+SemNumero1:
+
+
+;if (R5 = 2 && robo = 2)
+CMP R5, #'2'
+BNE SemNumero2
+TST robo2
+BEQ SemNumero2
+
+
+
+
+CLR R5
+MOV #2, RoboFoco ;muda o foco do robo
+JSR R7, LimpaVisor
+
+
+SemNumero2:
+
+
+;if (R5 = 3 && robo = 3)
+CMP R5, #'3'
+BNE SemNumero3
+TST robo3
+BEQ SemNumero3
+
+
+CLR R5
+MOV #3, RoboFoco ;muda o foco do robo
+JSR R7, LimpaVisor
+
+
+SemNumero3:
+
+
+;if (R5 = 4 && robo = 4)
+CMP R5, #'4'
+BNE SemNumero4
+TST robo4
+BEQ SemNumero4
+
+
+CLR R5
+MOV #4, RoboFoco ;muda o foco do robo
+JSR R7, LimpaVisor
+
+
+SemNumero4:
+
+
+RTS R7
+
+
+
+
+
+
+;=============================================================================
+;Função que trata o acionamento dos robos e futuramente o nome deles
+DigitacaoNomeRobo:
+
+
+;if tecla = 'N' || 'n'
+CMP R5, #'n'
+BEQ ContinuaN
+CMP R5, #'N'
+BEQ ContinuaN
+JMP pulaDigitacaoNomeRoboxx
+ContinuaN:
+
+
+CLR R5
+
+JSR R7, LimpaVisor
+
+TST robo1
+BNE proximorobo2   ;Caso estela ativado
+
+
+INC robo1 ;ativa o robo
+MOV #1, RoboFoco ;muda o foco do robo
+br pulaDigitacaoNomeRoboxx
+JSR R7, LimpaVisor
+
+
+proximorobo2:
+TST robo2
+BNE proximorobo3   ;Caso estela ativado
+
+
+
+
+INC robo2 ;ativa o robo
+MOV #2, RoboFoco ;muda o foco do robo
+br pulaDigitacaoNomeRoboxx
+JSR R7, LimpaVisor
+
+
+proximorobo3:
+TST robo3
+BNE proximorobo4   ;Caso estela ativado
+
+
+
+
+INC robo3 ;ativa o robo
+MOV #3, RoboFoco ;muda o foco do robo
+br pulaDigitacaoNomeRoboxx
+JSR R7, LimpaVisor
+
+
+proximorobo4:
+TST robo4 
+BNE NenhumRoboLigado ;Caso todos estejam ativados(mensagem 2 seg) **** ALERTA A FAZER
+
+
+
+
+INC robo4 ;ativa o robo
+MOV #4, RoboFoco ;muda o foco do robo
+br pulaDigitacaoNomeRoboxx
+JSR R7, LimpaVisor
+
+
+NenhumRoboLigado: ;ainda a fazer
+
+JSR R7, LimpaVisor
+MOV #0, doisdecimos
+
+MOV #19, R0                      ; tamanho da mensagem (em caracteres) 
+MOV #NAOHAROBOSLIVRES, R1          ; endereco da mensagem a ser escrita no visor 
+MOV #VISOR, R2               ; Esta posição já estava correta 
+JSR R7, escreveVisor
+
+loopdoissegundos:
+CMP doisdecimos, #20
+BLE loopdoissegundos
+
+JSR R7, LimpaVisor
+
+
+
+
+pulaDigitacaoNomeRoboxx:
+
+
+
+
+
+
+RTS R7
+
+
+
+
+;=============================================================================
+;Função que testa se todos os robos estão desativados:
+
+
+TestaRobosDesativados:
+
+
+TST robo1
+BNE FimFuncaoRoboDesativado ;Caso estela ativado
+
+
+TST robo2
+BNE FimFuncaoRoboDesativado ;Caso estela ativado
+
+
+TST robo3
+BNE FimFuncaoRoboDesativado ;Caso estela ativado
+
+
+TST robo4
+BNE FimFuncaoRoboDesativado ;Caso estela ativado
+
+
+;Coloca ROBOS PARADOS no visor
+
+
+MOV #13, R0      ; tamanho da mensagem (em caracteres)
+MOV #RobosParados, R1      ; endereco da mensagem a ser escrita no visor
+MOV #VISOR, R2         ; endereco do LED onde deve iniciar a mensagem
+JSR R7, escreveVisor
+
+
+
+
+FimFuncaoRoboDesativado:
+
+
+RTS R7
+
+
+;-----------------------------------------------------------------------------
+;Função de interrupções
+
+
+rotinainterrupcao:
+
+
+MOV R0, -(R6)
+MOV R1, -(R6)
+MOV R2, -(R6)
+MOV R3, -(R6)
+
+
+MOV INTS, R0
+AND #2, R0
+BEQ testaTimer
+JSR R7, rotinatratamentoTECLADO
+
+
+testaTimer:
+MOV INTS, R0 
+AND #1, R0
+BEQ fimrotinainterrupcao
+JSR R7, rotinatratamentoTIMER
+
+
+
+
+
+
+fimrotinainterrupcao:
+
+
+CLR INTS  ;Desliga bit de INT TECLADO E TIMER
+
+
+
+
+MOV (R6)+, R3
+MOV (R6)+, R2
+MOV (R6)+, R1
+MOV (R6)+, R0
+
+
+RTI
+
+
+
+
+rotinatratamentoTECLADO:
+
+
+MOV TECDT, R5
+MOV #1, teclaPressionada
+
+
+CLR TECST
+
+
+RTS R7
+
+
+
+
+
+
+rotinatratamentoTIMER:
+
+inc doisdecimos
+INC decimos
+CMP decimos, #10
+BLT rotinatratamentoTIMERfim
+
+
+CLR decimos
+INC umsegundo
+
+
+rotinatratamentoTIMERfim:
+
+
+RTS R7
+
+
+;----------------------------------------------------
+
+
+
+
+
+
+;Funções extras do Johann
+
+
+;**********************************************************
+; void int2str(char *s, uint n) {
+;	2(R6) -> s -> R1
+;	4(R6) -> n -> R2
+;
+;**********************************************************
+int2str:
+	MOV	2(R6),R1	; s
+	MOV	4(R6),R2	; n
+	
+	BPL	EhPositivo	; 	if ( n < 0 ) {
+
+	NEG	R2			; 		n = -n;
+	
+	MOV	-1(R1),R0	; 		*s++ = '-';
+	AND	#HFF00,R0
+	OR	#'-',R0
+	MOV	R0,-1(R1)
+	INC	R1
+					; 	}
+
+EhPositivo:
+	MOV	R2,-(R6)	; 	uint2str(s,n);
+	MOV	R1,-(R6)
+	JSR	R7,uint2str
+	ADD	#4,R6
+	
+	RTS	R7			; }
+	
+
+;**********************************************************
+; void uint2str(char *s, uint n)
+;	2(R6) -> s -> R1
+;	4(R6) -> n -> R2
+;
+;	Lacos  -> R5
+;	pTab10 -> R4
+;	dig    -> R3
+;
+;**********************************************************
+Tab10:		DAW	10000, 1000, 100, 10
+uint2str:
+	MOV	2(R6),R1	; R1 = s
+	MOV	4(R6),R2	; R2 = n
+
+	MOV	#Tab10,R4	; pTab10 = Tab10;
+  	MOV R5, -(R6)
+	MOV	#4,R5		; Lacos = 4;
+	
+Loop:				; do {
+	MOV	#'0',R3		; 	dig = '0';
+
+LoopInterno:
+	CMP	R2,(R4)		; 	while (n >= *pTab10) {
+	BLT	EhMenor
+	INC	R3			; 		++dig;
+	SUB	(R4),R2		; 		n -= *pTab10;
+	JMP	LoopInterno	; 	}
+
+EhMenor:
+	MOV	-1(R1),R0	; 	*s++ = dig;
+	AND	#HFF00,R0
+	OR	R3,R0
+	MOV	R0,-1(R1)
+	INC	R1
+	
+	ADD	#2,R4		; 	++pTab10;
+
+	SOB	R5,Loop		; } while (--Lacos);
+	
+	ADD	#'0',R2		; *s++ = n + '0';
+	MOV	-1(R1),R0
+	AND	#HFF00,R0
+	OR	R2,R0
+	MOV	R0,-1(R1)
+	INC	R1
+	
+	MOV	-1(R1),R0	; *s++ = '\0';
+	AND	#HFF00,R0
+	MOV	R0,-1(R1)
+	MOV (R6)+, R5
+
+	RTS	R7
+
+
+
+
+          ORG 64290         ; ajusta endereco de inicio
+
+
+escreveVisor:
+__S501:   MOV (R1),R3       ; coloca 2 caracteres em R3
+          ASR R3            ; alinha primeiro caractere
+          ASR R3            ; a direita do registrador,
+          ASR R3            ; porque quando se escreve
+          ASR R3            ; na memoria a partir do
+          ASR R3            ; endereco 65500 apenas o byte
+          ASR R3            ; menos significativo e' escrito
+          ASR R3            ; na posicao correspondente
+          ASR R3            ; a um LED do visor
+          MOV R3,(R2)       ; move para o visor
+          SOB R0,-3         ; se ja moveu todo o texto,
+          RTS R7            ; retorna ao ponto de chamada
+          NOP               ; senao, vai mover o segundo
+          NOP               ; caractere da mesma palavra
+__S502:   INC R2            ; aponta para proximo LED
+          BEQ 19            ; fim do visor - volta ao LED 00
+          MOV (R1)+,R3      ; mesmos 2 caracteres em R3 e
+                            ; incrementa apontador do texto
+          MOV R3,(R2)       ; desta vez, move o segundo byte
+          SOB R0,-3         ; se ja moveu todo o texto,
+          RTS R7            ; retorna ao ponto de chamada
+          NOP
+          NOP
+          INC R2            ; senao, aponta proximo LED
+          BNE -42           ; e repete o laco
+                            ; fim do visor - volta ao LED 00
+__S503:   MOV #65500,R2     ; aponta para primeiro LED
+          BR  -48           ; volta a escrever no visor
+;
+__S504:   MOV #65500,R2     ; aponta para primeiro LED
+          BR  -25           ; volta a escrever no visor
+
+
+
+
+
+
+ORG 64080         ; ajusta endereco de inicio
+
+
+LimpaVisor:
+          CLR 65500         ; limpa LED 00
+          CLR 65501         ; limpa LED 01
+          CLR 65502         ; limpa LED 02
+          CLR 65503         ; limpa LED 03
+          CLR 65504         ; limpa LED 04
+          CLR 65505         ; limpa LED 05
+          CLR 65506         ; limpa LED 06
+          CLR 65507         ; limpa LED 07
+          CLR 65508         ; limpa LED 08
+          CLR 65509         ; limpa LED 09
+          CLR 65510         ; limpa LED 10
+          CLR 65511         ; limpa LED 11
+          CLR 65512         ; limpa LED 12
+          CLR 65513         ; limpa LED 13
+          CLR 65514         ; limpa LED 14
+          CLR 65515         ; limpa LED 15
+          CLR 65516         ; limpa LED 16
+          CLR 65517         ; limpa LED 17
+          CLR 65518         ; limpa LED 18
+          CLR 65519         ; limpa LED 19
+          CLR 65520         ; limpa LED 20
+          CLR 65521         ; limpa LED 21
+          CLR 65522         ; limpa LED 22
+          CLR 65523         ; limpa LED 23
+          CLR 65524         ; limpa LED 24
+          CLR 65525         ; limpa LED 25
+          CLR 65526         ; limpa LED 26
+          CLR 65527         ; limpa LED 27
+          CLR 65528         ; limpa LED 28
+          CLR 65529         ; limpa LED 29
+          CLR 65530         ; limpa LED 30
+          CLR 65531         ; limpa LED 31
+          CLR 65532         ; limpa LED 32
+          CLR 65533         ; limpa LED 33
+          CLR 65534         ; limpa LED 34
+          CLR 65535         ; limpa LED 35
+          RTS R7            ; retorna ao ponto de chamada
