@@ -1,0 +1,115 @@
+;;Trabalho FINAL Ahmes
+
+
+;;Inicialização de variaveis 
+LDA C0
+STA MX
+STA MY
+STA NX
+STA NY
+
+;;Verificação se A é 0
+LDA AX
+JNZ VOLTA
+LDA AY
+JZ FIM
+
+
+;;incremento do B
+VOLTA: LDA MY
+ADD C1
+STA MY
+JNC CARRY1
+LDA MX
+ADD C1
+STA MX
+CARRY1: 
+
+;;Divisão
+
+;;(R = B) / Inicialização do Resto
+LDA AX
+STA RX
+LDA AY
+STA RY
+
+;;(R < M) / Verificação da subtração sucessiva
+VERIF:LDA RX 
+SUB MX
+JB NTEM          ;;(SE DER BORROW, NÃO TEM RESTO 0)
+LDA RY
+SUB MY
+JB VERIFICACAO   ;;(SE DER BORROW, VERIFICAR)
+JZ VERIFICACAO2  ;;(SE FOR ZERO, VERIFICAR)
+JMP DIVISAO
+
+VERIFICACAO: LDA RX
+JZ NTEM        ;;(SE NÃO TIVER NADA NO RX PARA DAR BORROW ENTÃO NÃO TEM RESTO 0)
+JMP DIVISAO    ;;(SENÃO CONTINUA)
+
+VERIFICACAO2:
+LDA RX
+SUB MX
+JZ TEM      ;;(SE ESTIVER ZERADO, ENT O RX E MX SÃO IGUAIS, PORTANTO N INTERFEREM NO RESTO)
+JMP DIVISAO ;;(SENÃO AINDA TEM QUEM SUBTRAIR)
+
+
+;;(R - M) E VOLTA A VERIF / Subtração sucessiva
+DIVISAO: LDA RY
+SUB MY
+STA RY
+JNB BORROW
+LDA RX
+SUB C1
+STA RX
+BORROW: LDA RX
+SUB MX
+STA RX
+JMP VERIF
+
+
+;;Se (R = 0) / Incremento do Numero de divisores
+TEM:LDA NY
+ADD C1
+STA NY
+JNC CARRY2
+LDA NX
+ADD C1
+STA NX
+CARRY2:
+
+;;Se (M = A) FIM / verificação do fim do loop
+NTEM:LDA MX
+SUB AX
+JNZ VOLTA
+LDA MY
+SUB AY
+JZ FIM
+JMP VOLTA
+
+FIM: HLT
+
+
+
+
+
+;;Posições de Memoria
+ORG H80
+
+;;Numero a ser calculado
+AX: DB    ;;80h
+AY: DB    ;;81h
+;;Numero de divisores inteiros
+NX: DB    ;;82h
+NY: DB    ;;83h
+;;TODOS OS NUMEROS A SEREM DIVIDIDOS
+MX: DB    ;;86h
+MY: DB    ;;87h
+;;RESTO
+RX: DB    ;;88h
+RY: DB    ;;89h
+
+
+;;constantes
+C0: DB   0  ;;95h = 0
+C1: DB   1  ;;96h = 1

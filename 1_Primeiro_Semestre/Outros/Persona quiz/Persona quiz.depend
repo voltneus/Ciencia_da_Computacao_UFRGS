@@ -1,0 +1,24 @@
+# depslib dependency file v1.0
+1737660680 source:c:\users\vitor\onedrive\documents\persona quiz\functions.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"raylib.h"
+	"functions.h"
+
+1737660680 c:\users\vitor\onedrive\documents\persona quiz\functions.h
+	"raylib.h"
+	"definitions.h"
+
+1737659082 c:\users\vitor\onedrive\documents\persona quiz\definitions.h
+	<stdio.h>
+	"raylib.h"
+
+1737662505 source:c:\users\vitor\onedrive\documents\persona quiz\main.c
+	<stdio.h>
+	<stdlib.h>
+	"raylib.h"
+	"definitions.h"
+	"functions.h"
+	"functions.h"
+

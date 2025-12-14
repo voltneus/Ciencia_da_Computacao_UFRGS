@@ -1,0 +1,9 @@
+#ifndef FUNCOES_H
+#define FUNCOES_H
+
+#include "raylib.h"   // Se você estiver usando tipos da raylib como Rectangle e Color
+#include "definicoes.h"
+
+
+
+#endif

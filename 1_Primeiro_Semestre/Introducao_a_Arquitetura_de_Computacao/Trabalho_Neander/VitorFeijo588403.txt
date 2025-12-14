@@ -1,0 +1,93 @@
+Trabalho Neander 2.0
+
+Vítor Santana Feijó - 588403
+
+Espaços de Memoria
+
+principal:
+128 - 80 - entrada a
+129 - 81 – entrada b
+130 - 82 – saída a XOR b
+131 - 83 – saída Distância de Hamming
+
+variáveis auxiliares:
+132 - 84 - primeiro termo do xor 
+
+números auxiliares:
+133 - 85 = 0
+134 - 86 = 1
+135 - 87 = -1(ff)
+
+mascaras:
+136 - 88 - M = 0000 0001 (01)
+
+aux mascara:
+137 - 89 - N = 0000 1001 (09)
+número auxiliar N(limpeza):
+138 - 8A = 909
+
+
+
+Parte 1 - Limpeza de variáveis:
+lda 85
+sta 82
+sta 83
+
+limpeza M
+lda 86
+sta 88
+
+limpeza N
+lda 8a
+sta 89
+
+Parte 2 - XOR:
+lda 80
+not 
+and 81
+sta 84
+lda 81
+not
+and 80
+or 84
+sta 82
+
+
+
+Parte 3 - distancia de hamming:
+
+
+= 
+(mascara)
+lda 82 
+and 88
+jz *
+(atualização da distancia de hamming)
+lda 83 
+add 86
+sta 83
+*
+(atualização mascara)
+lda 88 
+add 88
+sta 88
+(contagem e atualização ciclos)
+lda 89 
+add 87
+sta 89
+jz +
+jmp =
++
+hlt
+
+
+
+
+
+
+
+
+
+
+
+
