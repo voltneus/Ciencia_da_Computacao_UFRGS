@@ -1,0 +1,62 @@
+//Hardware Description:
+
+module sc(A, B, Cin, Cout, S);
+input A, B, Cin;
+output Cout;
+output [1:0] S;
+
+wire[2:0] in;
+wire nA, nB, nCin, m3, m5, m6, m7;
+wire[1:0] s; // Deve ser minúsculo como é usado no assign abaixo
+
+assign s=
+(in == 3'b000) ? 2'b00:
+(in == 3'b001) ? 2'b01:
+(in == 3'b010) ? 2'b01:
+(in == 3'b100) ? 2'b01:
+(in == 3'b011) ? 2'b10:
+(in == 3'b110) ? 2'b10:
+(in == 3'b101) ? 2'b10:
+(in == 3'b111) ? 2'b11:
+2'b00;
+
+buf(in[2], A);
+buf(in[1], B);
+buf(in[0], Cin);
+
+assign S = s; // Assegure-se que a saída S e a variável s estão alinhadas e usam a mesma capitalização.
+assign Cout = m3 | m5 | m6 | m7; // Cout é a OR de todos os termos m
+
+and(m3, ~A, B, Cin);
+and(m5, A, ~B, Cin);
+and(m6, A, B, ~Cin);
+and(m7, A, B, Cin);
+
+endmodule
+
+
+
+
+
+
+
+
+
+
+//Pinout:
+
+//                                            (c) 2025 inPlace Design Automation
+// Descrição : arquivo de pinagem contendo o mapeamento do módulo counter2b para
+//             a placa T (T-board).
+
+//  MODULE PORT     BOARD COMPONENT
+    Cin       =   sw0;
+    A         =   sw1;
+    B         =   sw2;
+
+// Mapeamento dos bits de saída do contador para os LEDs
+    S[0]      =   led0;
+    S[1]      =   led1; // Adicionada a linha correta para mapear S[1]
+    Cout      =   led1; // Adicionada a linha correta para mapear Cout
+
+
