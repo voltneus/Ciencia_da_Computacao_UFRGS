@@ -1,0 +1,300 @@
+// limpa variável
+operation clear(A){
+ 1: if zero A then goto 0 else goto 2
+ 2: do dec A goto 1
+}
+
+// A:=A+B (soma destrutiva)
+operation soma(A,B){
+  1: if zero B then goto 0 else goto 2
+  2: do dec B goto 3
+  3: do inc A goto 1
+}
+
+// A:=A+B (soma não-destrutiva)
+operation soma(A,B,C){
+  1: if zero B then goto 5 else goto 2
+  2: do dec B goto 3
+  3: do inc A goto 4
+  4: do inc C goto 1
+  5: if zero C then goto 0 else goto 6
+  6: do dec C goto 7
+  7: do inc B goto 5
+}
+
+// A:=B (atribuição destrutiva)
+operation load(A,B){
+  1: do clear(A) goto 2
+  2: do soma(A,B) goto 0
+}
+
+// A:=B usando C (atribuição não-destrutiva)
+operation load(A,B,C){
+  1: do clear(A) goto 2
+  2: do soma(A,B,C) goto 0
+}
+
+
+
+
+// B <- A , destrutivo
+operation carrega(A,B){
+1: do clear(B) goto 2
+2: if zero A then goto 0 else goto 3
+3: do inc B goto 4
+4: do dec A goto 2
+
+}
+
+// B <- A , não destrutivo, usa o C como auxiliar
+operation carrega(A,B,C){
+1: do clear(B) goto 2
+2: if zero A then goto 6 else goto 3
+3: do inc B goto 4
+4: do inc C goto 5
+5: do dec A goto 2
+6: do carrega(C,A) goto 0
+
+}
+
+// A * B = C , não destrutivo com C, D e E como auxiliar
+operation mult(A,B,C,D,E){
+  1: do carrega(B,D,E) goto 2
+  //se for zero devolve zero
+  2: if zero A then goto 0 else goto 3
+  3: if zero D then goto 0 else goto 4
+  //caso deva ser feita a multiplicação
+  4: do soma(C,A,E) goto 5
+  5: do dec D goto 6
+  6: if zero D then goto 7 else goto 4 
+  7: do clear(E) goto 0
+}
+
+
+//Fatorial de A! = A -- Auxiliares
+operation fat(A,B,C,D,E){
+
+ //Verifica se 0! ou 1!
+ 1: do dec A goto 2
+ 2: if zero A then goto 3 else goto 4
+ 3: do inc A goto 0
+
+//Caso onde é fatorial
+ 4: do inc A goto 5
+
+ 5: do load(B,A,C) goto 6
+ 6: do clear(C) goto 7
+ //Loop
+ 7: do dec B goto 8
+ 8: if zero B then goto 0 else goto 9
+ 9: do mult(A,B,C,D,E) goto 10
+ 10: do load(A,C) goto 11
+ 11: do clear(D) goto 7
+}
+
+// A := A - B , destrutivo.
+// Se A >= B → A = A-B, B=0
+// Se B > A → B = B-A, A=0 (interprete como negativo)
+operation sub(A,B){ 
+1: if zero B then goto 0 else goto 2
+2: if zero A then goto 0 else goto 3
+
+3: do dec A goto 4
+4: do dec B goto 1
+}
+
+//A * B = A, NÃO DESTRUTIVO PARA B
+operation multp(A,B,C,D,E) {
+    // Casos base: se A ou B for 0, o resultado é 0.
+    1: if zero A then goto 0 else goto 2
+    2: if zero B then goto 3 else goto 4
+    3: do clear(A) goto 0
+
+    // Preparação
+    4: do load(C,B,E) goto 5
+    5: do load(D,A,E) goto 6 
+    
+
+    6: do dec C goto 7
+
+    // Início do laço
+    7: if zero C then goto 0 else goto 8 
+    8: do soma(A,D,E) goto 9             
+    9: do dec C goto 7                  
+}
+
+//C = A < B , (Resposta no C),  não destrutivo com A e B usando C,D,E
+//Devolve 0, caso A seja menor, 1 caso seja igual e 2 caso seja menor
+
+//A > B, C = 2
+//A < B, C = 0 
+//B = A, C = 1
+
+operation cmp(A,B,C,D,E){
+
+//prepara os registradores auxiliares
+1:do carrega(A,C,E) goto 2
+2:do carrega(B,D,E) goto 3
+
+//teste
+3:do dec C goto 4
+//(CASO 1) se for zero ele chegou primeiro no zero ou na mesma hora
+4:if zero C then goto 10 else goto 5
+5:do dec D goto 6
+//(CASO 2) se for zero D chegou primeiro e ele é menor
+6:if zero D then goto 20 else goto 3
+
+//CASO 1:
+10:do dec D goto 11
+// se for 0 ent chegou no mesmo momento e C=1, senão C=0
+11:if zero D then goto 12 else goto 16 
+12:do clear(C) goto 13
+13:do add C 1 goto 14
+14:do clear(D) goto 15
+15:do clear(E) goto 0
+
+16:do clear(C) goto 17
+17:do add C 0 goto 18
+18:do clear(D) goto 19
+19:do clear(E) goto 0
+
+//CASO 2:
+20:do clear(C) goto 21
+21:do add C 2 goto 22
+22:do clear(D) goto 23
+23:do clear(E) goto 0
+
+
+}
+
+
+
+
+
+
+// A div B -> C, não-destrutivo para A e B
+operation div(A,B,C,D,E,F){
+
+//Limpa o registrador de resultado
+1: do clear(C) goto 2
+
+//Se B = 0, retorna C = 0 como resposta.
+2: if zero B then goto 0 else goto 3
+
+// Verifica se A = 0, C = 0
+3: if zero A then goto 0 else goto 7
+
+// Verifica se B = 1, se for C <- A
+//4: do dec B goto 5
+//5: if zero B then goto 6 else goto 9
+
+//6: do inc B goto 7
+
+// C <- A
+7: do load(C,A,E) goto 8
+8: do clear(E) goto 15
+
+//9: do inc B goto 10
+//10: do cmp(A,B,C,D,E) goto 11
+//11: if zero C then goto 12 else goto 15
+//12: do clear(C) goto 13
+//13: do clear(D) goto 14
+//14: do clear(E) goto 0
+
+// Fazer se B <= A e B != (0,10) e A != 0
+
+// D <- A
+15: do load(D,A,Z1) goto 16
+
+//F <- B
+16: do load(F,B,Z2) goto 16a
+
+16a: do clear(C) goto 17
+
+// C = 0, B > A, sai do codigo
+17: do cmp(D,F,E,Z3,Z4) goto 18
+18: if zero E then goto 19 else goto 22
+19: do clear(D) goto 20
+20: do clear(F) goto 21
+21: do clear(E) goto 0
+
+22: do sub(D,F) goto 23
+23: do inc C goto 24
+24: do load(F,B,Z) goto 25
+25: do clear(Z) goto 17
+
+
+}
+
+
+
+
+
+
+
+// combinação de A escolhe B, resultado em A.
+operation combinacao(A,B,C,D,E,F,G){
+
+// Verifica se B é zero -> resultado = 1
+
+1:  if zero B then goto 2 else goto 3
+2:  do clear(A) goto 2a
+2a: do inc A goto 0
+
+//Verifica se B é 1 (testa com dec/inc para não destruir)
+3:  do dec B goto 4
+4:  if zero B then goto 5 else goto 6
+5:  do inc B goto 0
+
+// continua: restaura B (caso não fosse 1) e segue
+6:  do inc B goto 7
+
+//Verifica se A < B,
+7:  do cmp(A,B,C,D,E) goto 8
+8:  if zero C then goto 9 else goto 10
+9:  do clear(A) goto 0
+
+//Verifica B = A
+10: do dec C goto 11
+11: if zero C then goto 12 else goto 14
+12: do clear(A) goto 13
+13: do inc A goto 0
+
+// Aqui é feito a combinação apenas se B < A e B != {0,1}
+//C <- A
+14: do load(C,A,X1) goto 15
+// D <- B
+15: do load(D,B,X2) goto 16
+
+// Calcula C = A(C) - B(D)
+16: do sub(C,D) goto 165
+165: do clear(D) goto 17
+
+// Faz C = (A-B)!
+17: do fat(C,X3,X4,X5,X6) goto 18
+
+// Faz B!
+18: do fat(B,X7,X8,X9,X10) goto 19
+
+// Faz B <- B! * (A-B)!
+19: do multp(B,C,X11,X12,X13) goto 20
+
+// Faz A! (A será usado como numerador)
+20: do fat(A,X14,X15,X16,X17) goto 21
+
+// Divide A! por B!*(A-B)! -> resultado em A
+21: do div(A,B,C,X18,X19,X20) goto 22
+22: do load(A,C) goto 0
+}
+
+
+
+
+
+// Programa principal
+main {
+1: do add A 4 goto 2
+2: do add B 2 goto 3
+3: do combinacao(A,B,C,D,E,F,G) goto 0
+
+} 

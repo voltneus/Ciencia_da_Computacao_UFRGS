@@ -1,0 +1,201 @@
+// limpa variável
+operation clear(A){
+ 1: if zero A then goto 0 else goto 2
+ 2: do dec A goto 1
+}
+
+// A:=A+B (soma destrutiva)
+operation soma(A,B){
+  1: if zero B then goto 0 else goto 2
+  2: do dec B goto 3
+  3: do inc A goto 1
+}
+
+// A:=A+B (soma não-destrutiva)
+operation soma(A,B,C){
+  1: if zero B then goto 5 else goto 2
+  2: do dec B goto 3
+  3: do inc A goto 4
+  4: do inc C goto 1
+  5: if zero C then goto 0 else goto 6
+  6: do dec C goto 7
+  7: do inc B goto 5
+}
+
+// A:=B (atribuição destrutiva)
+operation load(A,B){
+  1: do clear(A) goto 2
+  2: do soma(A,B) goto 0
+}
+
+// A:=B usando C (atribuição não-destrutiva)
+operation load(A,B,C){
+  1: do clear(A) goto 2
+  2: do soma(A,B,C) goto 0
+}
+
+// A:=A div 2 usando C (divisão inteira por 2)
+operation div2(A,C){
+  1: do load(C,A) goto 2
+  2: if zero C then goto 0 else goto 3
+  3: do dec C goto 4
+  4: if zero C then goto 0 else goto 5
+  5: do dec C goto 6
+  6: do inc A goto 2
+}
+
+// A divisivel_por_2 usando C (teste se multiplo de 2)
+test divBy2(A,C){
+  1: do load(C,A) goto 2
+  2: if zero C then goto true else goto 3
+  3: do dec C goto 4
+  4: do inc A goto 5
+  5: if zero C then goto false else goto 6
+  6: do inc A goto 7
+  7: do dec C goto 2
+}
+
+// A:=fst(B) usando C,D (extrai o primeiro componente do par)
+operation fst(A,B,C,D){
+  1: do clear(A) goto 2
+  2: do load(C,B,D) goto 3
+  3: if divBy2(C,D) then goto 4 else goto 6
+  4: do div2(C,D) goto 5
+  5: do inc A goto 3
+  6: do clear(C) goto 0
+}
+
+// A:=A div 3 usando C (divisão inteira por 3)
+operation div3(A,C){
+  1: do load(C,A) goto 2
+  2: if zero C then goto 0 else goto 3
+  3: do dec C goto 4
+  4: if zero C then goto 0 else goto 5
+  5: do dec C goto 6
+  6: if zero C then goto 0 else goto 7
+  7: do dec C goto 8
+  8: do inc A goto 2
+}
+
+// A divisivel_por_3 usando C (teste se múltiplo de 3)
+test divBy3(A,C){
+  1: do load(C,A) goto 2
+  2: if zero C then goto true else goto 3
+  3: do dec C goto 4
+  4: do inc A goto 5
+  5: if zero C then goto false else goto 6
+  6: do inc A goto 7
+  7: do dec C goto 8
+  8: if zero C then goto false else goto 9
+  9: do dec C goto 10
+ 10: do inc A goto 2
+}
+
+// A:=snd(B) usando C,D (extrai o segundo componente do par)
+operation snd(A,B,C,D){
+  1: do clear(A) goto 2
+  2: do load(C,B,D) goto 3
+  3: if divBy3(C,D) then goto 4 else goto 6
+  4: do div3(C,D) goto 5
+  5: do inc A goto 3
+  6: do carrega(C,A) goto 7
+  7: do clear(C) goto 0
+}
+
+// B = A , destrutivo, usa o C como auxiliar
+operation carrega(A,B){
+1: do clear(B) goto 2
+2: if zero A then goto 0 else goto 3
+3: do inc B goto 4
+4: do dec A goto 2
+
+}
+
+// B = A , não destrutivo, usa o C como auxiliar
+operation carrega(A,B,C){
+1: do clear(B) goto 2
+2: if zero A then goto 6 else goto 3
+3: do inc B goto 4
+4: do inc C goto 5
+5: do dec A goto 2
+6: do carrega(C,A) goto 0
+
+}
+
+// A * B = C , não destrutivo com D, E como auxiliar
+operation mult(A,B,C,D,E){
+  1: do carrega(B,D,E) goto 2
+  //se for zero devolve zero
+  2: if zero A then goto 0 else goto 3
+  3: if zero D then goto 0 else goto 4
+  //caso deva ser feita a multiplicação
+  4: do soma(C,A,E) goto 5
+  5: do dec D goto 6
+  6: if zero D then goto 7 else goto 4 
+  7: do clear(E) goto 0
+}
+
+//A * B = A, NÃO DESTRUTIVO PARA B
+operation multp(A,B,C,D,E) {
+    // Casos base: se A ou B for 0, o resultado é 0.
+    1: if zero A then goto 0 else goto 2
+    2: if zero B then goto 3 else goto 4
+    3: do clear(A) goto 0
+
+    // Preparação
+    4: do load(C,B,E) goto 5
+    5: do load(D,A,E) goto 6 
+    
+
+    6: do dec C goto 7
+
+    // Início do laço
+    7: if zero C then goto 0 else goto 8 
+    8: do soma(A,D,E) goto 9             
+    9: do dec C goto 7                  
+}
+
+
+
+// A^B = A , destrutivo usando C,D,E
+operation exponencial(A,B,C,D,E,F){
+
+// caso a base seja 0 -> resultado = 0
+1: if zero A then goto 0 else goto 2
+
+// caso o expoente seja 0 -> resultado = 1
+2: if zero B then goto 20 else goto 3
+
+// copia base em C
+3: do carrega(A,C,D) goto 4
+
+// se B == 1 -> não precisa multiplicar
+4: do dec B goto 5
+5: if zero B then goto 0 else goto 6
+
+// loop: multiplica A por C enquanto B > 0
+6: do multp(A,C,D,E,F) goto 7
+7: do dec B goto 8
+8: if zero B then goto 0 else goto 6
+
+// resultado = 1 (quando a base é zero)
+20: do clear(A) goto 21
+21: do inc A goto 0
+}
+
+
+
+// Programa principal
+main {
+
+
+  1: do add A 2 goto 2 
+  2: do carrega(X,Y,Z) goto 3
+  3: do div2(X,C) goto 4
+  4: do exponencial(A,X,C,D,E,F) goto 5
+  5: do soma(Y,A,E) goto 0
+
+  
+ 
+
+} 

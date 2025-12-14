@@ -1,0 +1,85 @@
+// ZERA O REGISTRADOR
+operation zera(ZeraA){
+1: if zero ZeraA then goto 0 else goto 2
+2: do dec ZeraA goto 1
+}
+
+// MOVE O VALOR DE "A" PARA "B" COM AUXÍLIO DO REGISTRADOR C
+operation move(MovA,MovB){
+1: do zera(MovB) goto 2
+2: if zero MovA then goto 6 else goto 3
+3: do dec MovA goto 4
+4: do inc MovB goto 5
+5: do inc MovC goto 2
+6: if zero MovC then goto 0 else goto 7
+7: do dec MovC goto 8
+8: do inc MovA goto 6 
+}
+
+// SUBTRAI O VALOR "B" DE "A" COM AUXÍLIO DO REGISTRADOR C 
+// RETORNA 0 SE O RESULTADO < 0
+// RETORNA 1 SE O RESULTADO >= 0
+operation subtrai(Suba,Subb,SubBool){
+1: do move(Subb,Subc) goto 2
+2: if zero Subc then goto 6 else goto 3
+3: do dec Subc goto 4
+4: do dec Suba goto 5
+5: if zero Suba then goto 6 else goto 2
+6: do zera(SubBool) goto 7
+7: if zero Subc then goto 8 else goto 0
+8: do inc SubBool goto 0
+}
+
+// ADICIONA O VALOR "B" EM "A" COM AUXÍLIO DO REGISTRADOR C
+operation soma(Suma,Sumb){
+1: do move(Sumb,Sumc) goto 2
+2: if zero Sumc then goto 0 else goto 3
+3: do dec Sumc goto 4
+4: do inc Suma goto 2
+}
+
+// DIVIDE UM NÚMERO PELO OUTRO ATRAVÉS DE SUBTRAÇÕES SUCESSIVAS
+// SE FOR UMA DIVISÃO SEM RESTO DEVOLVE 0 COMO RESPOSTA
+// SE FOR UMA DIVISÃO COM RESTO DEVOLVE 1 COMO RESPOSTA
+operation divide(Dividendo,Divisor,Divbool){
+1: if zero Divisor then goto 0 else goto 2
+2: do move(Dividendo,DivCopia) goto 3
+3: if zero DivCopia then goto 8 else goto 4
+4: do subtrai(DivCopia,Divisor,Dif) goto 5
+5: if zero Dif then goto 6 else goto 3
+6: do zera(Divbool) goto 7
+7: do inc Divbool goto 0
+8: do zera(Divbool) goto 0
+}
+
+operation compara(CompA,CompB,CompS){
+1: do move(CompA,CompC) goto 2
+2: do move(CompB,CompD) goto 3
+3: do subtrai(CompC,CompD,CompS) goto 0
+}
+
+
+main{
+1: do dec X goto 20
+20: do dec X goto 21
+21: if zero X then goto 32 else goto 22
+22: do inc X goto 23
+23: do inc X goto 10
+
+32: do inc Y goto 0
+
+10: do move(X,Cont) goto 2
+
+// decrementa 1 vez pra não dividir o número por ele mesmo
+2: do dec Cont goto 3
+
+// inicio do loop decrementa o cont uma vez para testar se é igual a 1
+3: do dec Cont goto 4
+4: if zero Cont then goto 0 else goto 5
+5: do inc Cont goto 6
+6: do divide(X,Cont,Y) goto 7
+7: if zero Y then goto 0 else goto 8
+8: do dec Cont goto 9
+9: if zero Cont then goto 0 else goto 3
+}
+

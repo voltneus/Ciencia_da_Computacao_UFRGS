@@ -1,0 +1,93 @@
+let
+
+    true = \x y. x;
+    false = \x y. y;
+    
+    if = \b e1 e2. b e1 e2;
+
+    not = \b. b false true;
+    and = \b1 b2. if b1 b2 false;
+    or = \b1 b2. if b1 true b2;
+
+    zero = \f x. x; -- pode-se usar 0 por praticidade
+    um = \f x. f x; -- 1
+    dois = \f x. f (f x); -- 2
+
+    succ = \n. \A B. A (n A B);
+
+    add = \n1 n2. n1 succ n2;
+    add2 = \n1 n2. \A B. n1 A (n2 A B);
+
+    mult = \n1 n2. n1 (\x. add n2 x) 0;
+    mult2 = \m n. \p q. m (n p) q;
+
+    isZero = \n. n (\x. false) true;
+    isPos = \n. not (isZero n); 
+
+    pair = \a b. \c. c a b;
+    fst = \p. p true;
+    snd = \p. p false;
+
+    swap = \p. pair (snd p) (fst p);
+    shiftInc = \p. pair (snd p) (succ (snd p));
+ 
+    -- (pred n) calcula n-1 se n>0, n se n=0 
+    pred = \n. fst (n shiftInc (pair 0 0));
+
+    -- (sub a b) calcula a - b
+    sub = \a b. b pred a;
+
+    -- (menor a b) testa a < b
+    menor = \a b. isPos (sub b a);
+    
+    empty = \x. true;
+    cons = pair;
+
+    isEmpty = \l. l (\a b. false);
+    head = fst;
+    tail = snd;
+
+    Y = \f. (\x. f (x x)) (\x. f (x x));
+
+    S_fat = \R. \n. if (isZero n)
+                    1
+                    (mult n (R (pred n)));
+
+    fat = Y S_fat;
+
+menorIgual = \a b. if (menor a b) true (if (isZero(sub a b)) true false);
+
+polinomio = \a b. (add (mult a (mult a a)) (mult b dois));
+
+S_divAbyB = \R. \a b. (if (menor a b) zero (add um (R (sub a b) b)));
+
+divAbyB = Y S_divAbyB;
+
+impar = \a. if (isZero (sub a (mult (divAbyB a dois) dois))) false true;
+
+tetoBy2 = \a. if (impar a) (add (divAbyB a 2) um) (divAbyB a 2); 
+
+S_potAnaB = \R. \a b. if (isZero b) um (mult a (R a (sub b um)));
+
+potAnaB = Y S_potAnaB;
+
+calcula = \a. (add a (potAnaB dois (tetoBy2 a)));
+
+multiplo3 = \a. (if (isZero (sub a (mult (divAbyB a (add dois um)) (add dois um)))) true (if (isZero a) true false));
+
+invFrac = \p. if(menor (snd p) (fst p)) (swap p) (if (isZero(sub (fst p) (snd p))) p (swap p));
+
+somaFrac = \p q. (pair (add (mult (fst p) (snd q)) (mult (snd p) (fst q))) (mult (snd p) (snd q)));
+
+S_prodLista = \R. \l. if (isEmpty l) um (mult (head l) (R (tail l)));
+
+prodLista = Y S_prodLista;
+
+S_concatena = \R. \l1 l2. if (isEmpty l1) l2 (cons (head l1) (R (tail l1) l2));
+
+concatena = Y S_concatena;
+
+
+
+in
+   true

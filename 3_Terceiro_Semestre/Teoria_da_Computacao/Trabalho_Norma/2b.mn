@@ -1,0 +1,305 @@
+// limpa variável
+operation clear(A){
+ 1: if zero A then goto 0 else goto 2
+ 2: do dec A goto 1
+}
+
+// A:=A+B (soma destrutiva)
+operation soma(A,B){
+  1: if zero B then goto 0 else goto 2
+  2: do dec B goto 3
+  3: do inc A goto 1
+}
+
+
+// A:=A+B (soma não-destrutiva)
+operation soma(A,B,C){
+  1: if zero B then goto 5 else goto 2
+  2: do dec B goto 3
+  3: do inc A goto 4
+  4: do inc C goto 1
+  5: if zero C then goto 0 else goto 6
+  6: do dec C goto 7
+  7: do inc B goto 5
+}
+
+// A:=B (atribuição destrutiva)
+operation load(A,B){
+  1: do clear(A) goto 2
+  2: do soma(A,B) goto 0
+}
+
+// A:=B usando C (atribuição não-destrutiva)
+operation load(A,B,C){
+  1: do clear(A) goto 2
+  2: do soma(A,B,C) goto 0
+}
+
+// A:=A div 2 usando C (divisão inteira por 2)
+operation div2(A,C){
+  1: do load(C,A) goto 2
+  2: if zero C then goto 0 else goto 3
+  3: do dec C goto 4
+  4: if zero C then goto 0 else goto 5
+  5: do dec C goto 6
+  6: do inc A goto 2
+}
+
+// A divisivel_por_2 usando C (teste se multiplo de 2)
+test divBy2(A,C){
+  1: do load(C,A) goto 2
+  2: if zero C then goto true else goto 3
+  3: do dec C goto 4
+  4: do inc A goto 5
+  5: if zero C then goto false else goto 6
+  6: do inc A goto 7
+  7: do dec C goto 2
+}
+
+// A:=fst(B) usando C,D (extrai o primeiro componente do par)
+operation fst(A,B,C,D){
+  1: do clear(A) goto 2
+  2: do load(C,B,D) goto 3
+  3: if divBy2(C,D) then goto 4 else goto 6
+  4: do div2(C,D) goto 5
+  5: do inc A goto 3
+  6: do clear(C) goto 0
+}
+
+// A:=A div 3 usando C (divisão inteira por 3)
+operation div3(A,C){
+  1: do load(C,A) goto 2
+  2: if zero C then goto 0 else goto 3
+  3: do dec C goto 4
+  4: if zero C then goto 0 else goto 5
+  5: do dec C goto 6
+  6: if zero C then goto 0 else goto 7
+  7: do dec C goto 8
+  8: do inc A goto 2
+}
+
+// A divisivel_por_3 usando C (teste se múltiplo de 3)
+test divBy3(A,C){
+  1: do load(C,A) goto 2
+  2: if zero C then goto true else goto 3
+  3: do dec C goto 4
+  4: do inc A goto 5
+  5: if zero C then goto false else goto 6
+  6: do inc A goto 7
+  7: do dec C goto 8
+  8: if zero C then goto false else goto 9
+  9: do dec C goto 10
+ 10: do inc A goto 2
+}
+
+// A:=snd(B) usando C,D (extrai o segundo componente do par)
+operation snd(A,B,C,D){
+  1: do clear(A) goto 2
+  2: do load(C,B,D) goto 3
+  3: if divBy3(C,D) then goto 4 else goto 6
+  4: do div3(C,D) goto 5
+  5: do inc A goto 3
+  6: do carrega(C,A) goto 7
+  7: do clear(C) goto 0
+}
+
+// B = A , destrutivo, usa o C como auxiliar
+operation carrega(A,B){
+1: do clear(B) goto 2
+2: if zero A then goto 0 else goto 3
+3: do inc B goto 4
+4: do dec A goto 2
+
+}
+
+// B = A , não destrutivo, usa o C como auxiliar
+operation carrega(A,B,C){
+1: do clear(B) goto 2
+2: if zero A then goto 6 else goto 3
+3: do inc B goto 4
+4: do inc C goto 5
+5: do dec A goto 2
+6: do carrega(C,A) goto 0
+
+}
+
+// A * B = C , não destrutivo com C, D e E como auxiliar
+operation mult(A,B,C,D,E){
+  1: do carrega(B,D,E) goto 2
+  //se for zero devolve zero
+  2: if zero A then goto 0 else goto 3
+  3: if zero D then goto 0 else goto 4
+  //caso deva ser feita a multiplicação
+  4: do soma(C,A,E) goto 5
+  5: do dec D goto 6
+  6: if zero D then goto 7 else goto 4 
+  7: do clear(E) goto 0
+}
+
+operation cod(A,B){
+1: do clear(Casa) goto 2
+2: do inc Casa goto 3
+3: do inc Casa goto 4
+4: do clear(Dado) goto 5
+5: do mult(B,Casa,Dado,Lesoto,Africadosul) goto 6
+6: do inc Dado goto 7
+7: do clear(Apartamento) goto 8
+8: do carrega(A,Bosnia,Herzegovina) goto 9
+9: do clear(Bagre) goto 10
+10: do inc Bagre goto 11
+11: do inc Bagre goto 12
+12: do carrega(Bagre,Carpa,Tilapia) goto 13
+13: do dec Bosnia goto 14
+14: if zero Bosnia then goto 19 else goto 15
+15: do mult(Bagre,Carpa,Estonia,Letonia,Lituania) goto 16
+16: do carrega(Estonia,Bagre) goto 17
+17: do clear(Estonia) goto 18
+18: do dec Bosnia goto 14
+19: do mult(Bagre,Dado,C,Relogio,Carteira) goto 0
+}
+
+operation inicializa(A){
+1: do add A 0 goto 2
+2: do clear(A) goto 0
+}
+
+//C = A < B , (Resposta no C),  não destrutivo com A e B usando C,D,E
+//Devolve 0, caso A seja menor, 1 caso seja igual e 2 caso seja menor
+operation cmp(A,B,C,D,E){
+
+//prepara os registradores auxiliares
+1:do carrega(A,C,E) goto 2
+2:do carrega(B,D,E) goto 3
+
+//teste
+3:do dec C goto 4
+//(CASO 1) se for zero ele chegou primeiro no zero ou na mesma hora
+4:if zero C then goto 10 else goto 5
+5:do dec D goto 6
+//(CASO 2) se for zero D chegou primeiro e ele é menor
+6:if zero D then goto 20 else goto 3
+
+//CASO 1:
+10:do dec D goto 11
+// se for 0 ent chegou no mesmo momento e C=1, senão C=0
+11:if zero D then goto 12 else goto 16 
+12:do clear(C) goto 13
+13:do add C 1 goto 14
+14:do clear(D) goto 15
+15:do clear(E) goto 0
+
+16:do clear(C) goto 17
+17:do add C 0 goto 18
+18:do clear(D) goto 19
+19:do clear(E) goto 0
+
+//CASO 2:
+20:do clear(C) goto 21
+21:do add C 2 goto 22
+22:do clear(D) goto 23
+23:do clear(E) goto 0
+
+
+}
+
+operation decod(C){
+1: do inicializa(A) goto 2
+2: do clear(Booleanodivdoisdc) goto 3
+3: do carrega(C,Auxiliardecod,Lixooo) goto 4
+4: if divBy2(Auxiliardecod,Auxdivby) then goto 5 else goto 7
+5: do div2(Auxiliardecod,Lixodiv) goto 6
+6: do inc A goto 4
+7: do dec Auxiliardecod goto 8
+8: do div2(Auxiliardecod,Lixodiv) goto 9
+9: do carrega(Auxiliardecod,B,Lixolixoso) goto 0
+}
+
+operation foo(Ursofoo){
+1: do carrega(Ursofoo,Tempfoo,Lixaredo) goto 2
+2: do inicializa(Contemdois) goto 3
+3: do add Contemdois 2 goto 4
+4: do inicializa(A) goto 5
+5: do inicializa(B) goto 6
+6: do mult(Tempfoo,Contemdois,A,D,E) goto 7
+7: do mult(Tempfoo,Tempfoo,B,Ddois,Edois) goto 8
+8: do cod(A,B) goto 0
+}
+
+operation maxfirst(C){
+1: do inicializa(A) goto 2
+2: do inicializa(B) goto 3
+3: do decod(C) goto 4
+4: do clear(C) goto 5
+5: do cmp(A,B,Booleanocmp,D,E) goto 6
+6: if zero Booleanocmp then goto 7 else goto 8
+7: do cod(B,A) goto 0
+8: do cod(A,B) goto 0
+}
+
+operation nand(C){
+1: do inicializa(A) goto 2
+2: do inicializa(B) goto 3
+3: do decod(C) goto 4
+4: do clear(C) goto 5
+5: do inicializa(Avalorverdade) goto 6
+6: do inicializa(Bvalorverdade) goto 7
+7: if zero A then goto 9 else goto 8
+8: do inc A goto 9
+9: if zero B then goto 11 else goto 10
+10: do inc B goto 11
+11: do inicializa(Somavalverdade) goto 12
+12: do soma(Somavalverdade,A) goto 13
+13: do soma(Somavalverdade,B) goto 14
+14: do inicializa(Valdois) goto 15
+15: do add Valdois 2 goto 16
+16: do cmp(Somavalverdade,Valdois,Auxiver,D,E) goto 17
+17: do dec Auxiver goto 18
+18: do inicializa(Saidanand) goto 19
+19: if zero Auxiver then goto 20 else goto 0
+20: do inc Saidanand goto 0
+}
+
+operation somaalt(A,B,C,Resultado){
+1: do carrega(A,Resultado,Auxx) goto 2
+  2: if zero B then goto 6 else goto 3
+  3: do dec B goto 4
+  4: do inc A goto 5
+  5: do inc C goto 2
+  6: if zero C then goto 9 else goto 7
+  7: do dec C goto 8
+  8: do inc B goto 6
+9: do carrega(Resultado,Alt,Any) goto 10
+10: do carrega(A,Resultado,Other) goto 11
+11: do carrega(Alt,A,Otherone) goto 0
+}
+
+operation fibo(Na){
+1: do inicializa(Uma) goto 2
+2: do inicializa(Umb) goto 3
+3: do inicializa(Umc) goto 4
+4: do inicializa(Umasaida) goto 5
+5: do carrega(Na,Nauxiliar,C) goto 6
+6: if zero Nauxiliar then goto 0 else goto 7
+7: do dec Nauxiliar goto 8
+8: if zero Nauxiliar then goto 9 else goto 10
+9: do inc Umasaida goto 0
+10: do carrega(Na,Ouk,Any) goto 11
+11: do carrega(Na,Contador,Umoutroaux) goto 12
+12: do dec Contador goto 13
+13: do dec Contador goto 14
+14: do inc Umb goto 15
+15: if zero Contador then goto 21 else goto 16
+16: do somaalt(Uma,Umb,C,Resultado) goto 17
+17: do carrega(Umb,Uma,Alte) goto 18
+18: do carrega(Resultado,Umb,Altedois) goto 19
+19: do carrega(Resultado,Umasaida,Altetres) goto 20
+20: do dec Contador goto 15
+21: do clear(Umasaida) goto 22
+22: do somaalt(Uma,Umb,Anyo,Umasaida) goto 0
+}
+
+// Programa principal
+main{
+1: do maxfirst(X) goto 2
+2: do load(Y,C) goto 0
+}
