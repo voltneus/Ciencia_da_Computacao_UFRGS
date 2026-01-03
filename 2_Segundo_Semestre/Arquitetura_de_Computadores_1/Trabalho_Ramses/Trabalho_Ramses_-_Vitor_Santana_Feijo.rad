@@ -1,0 +1,166 @@
+;Trabalho Ramsés Definitivo
+
+;--------------------------
+;Teoria:
+; O programa deve loopar NUM vezes ??, cada uma dessas pagando uma tripla e analisando o caso 
+;-caso 1(HIG > altura da tripla) -> (HIG - altura da tripla > 0): Faltando azulejos
+;-caso 2(HIG < altura da tripla) -> (HIG - altura da tripla < 0): Sobrando azulejos
+;-caso 3(HIG = altura da tripla) -> (HIG - altura da tripla = 0): Passa para o proximo, nenhum faltando ou sobrando
+; Para os casos 1 e 2 deve-se calcular a diferença e multiplicala pelo HIG
+; guardar o numero nas variaveis correspondentesbnv
+;loop
+;--------------------------	
+
+ORG 190
+Azulejos: DB 
+EnderecoTripla: DB 197
+
+ORG 192
+
+ADQ: DB ;azulejos a serem adiquiridos
+DES: DB ;azulejos a serem descartados
+HIG: DB ;altura da parede
+WID: DB ;largura da parede
+NUM: DB ;numeros de triplas
+
+ORG 197
+;triplas (altura/largura/azulejos a serem adquiridos para completar essa parede)
+
+;--------------------------------------- começo do codigo
+
+ORG 0
+
+;Limpeza de variaveis
+LDR A, #197
+STR A, EnderecoTripla
+LDR A, #0
+STR A, Azulejos
+STR A, ADQ
+STR A, DES
+
+
+;Teste se NUM é zero para acabar o programa
+LDR A, NUM
+JZ fim
+
+proximatripla: ;loop principal
+LDR A, HIG
+SUB A, EnderecoTripla,I
+JZ casoZero ;(HIG - altura da tripla = 0)
+JN sobrando ;(HIG - altura da tripla < 0)
+
+
+
+;------------------------------------------------------------------ faltando azulejos
+
+;(HIG - altura da tripla > 0)
+faltando: ;caso de azulejos a serem adiquiridos
+
+;Multiplicação do RA com (EndereçoTripla+1)
+;EndereçoTripla++;
+LDR B, EnderecoTripla
+ADD B, #1
+STR B, EnderecoTripla
+
+;Multiplicação
+
+LDR B, EnderecoTripla,i
+ADD B, #-1
+JZ terminofaltando ;largura = 1 (não precisa multiplicar)
+STR A, Azulejos
+
+loopmultiplicacaofaltando:
+ADD A, Azulejos
+ADD B, #-1
+JZ terminofaltando
+JMP loopmultiplicacaofaltando
+
+;Preencher a tripla e o ADQ
+terminofaltando:
+LDR B, EnderecoTripla
+ADD B, #1
+STR B, EnderecoTripla
+STR A, EnderecoTripla,i
+ADD A, ADQ
+STR A, ADQ
+
+;Proxima tripla
+LDR B, EnderecoTripla
+ADD B, #1
+STR B, EnderecoTripla
+
+JMP segue
+
+
+;------------------------------------------------------------------ sobrando
+
+;(HIG - altura da tripla < 0)
+sobrando: ;caso de azulejos a serem descartados
+
+
+
+;Multiplicação do RA com (EndereçoTripla+1)
+;EndereçoTripla++;
+LDR B, EnderecoTripla
+ADD B, #1
+STR B, EnderecoTripla
+
+;Multiplicação 
+
+NEG A
+LDR B, EnderecoTripla,i
+ADD B, #-1
+JZ terminosobrando ;largura = 1 (não precisa multiplicar)
+STR A, Azulejos
+
+loopmultiplicacaosobrando:
+ADD A, Azulejos
+ADD B, #-1
+JZ terminosobrando
+JMP loopmultiplicacaosobrando
+
+;Preencher a tripla e o DES
+terminosobrando:
+LDR B, EnderecoTripla
+ADD B, #1
+STR B, EnderecoTripla
+ADD A, DES
+STR A, DES
+LDR A, #0
+STR A, EnderecoTripla,i
+
+;Proxima tripla
+LDR B, EnderecoTripla
+ADD B, #1
+STR B, EnderecoTripla
+
+JMP segue
+
+
+;------------------------------------------------------------------ casoZero
+
+casoZero:
+
+;Coloca 0 na tripla e vai pra proxima tripla
+LDR B, EnderecoTripla
+ADD B, #2
+STR B, EnderecoTripla
+LDR A, #0
+STR A, EnderecoTripla,i
+LDR B, EnderecoTripla
+ADD B, #1
+STR B, EnderecoTripla
+
+JMP segue
+
+
+segue:
+LDR A, NUM
+ADD A, #-1
+STR A, NUM
+JZ fim
+;Volta pro loop
+JMP proximatripla
+
+fim:
+HLT
