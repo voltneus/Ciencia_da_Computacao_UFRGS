@@ -1,0 +1,8 @@
+# Dependências Python para os projetos do repositório
+
+# Arquitetura de Computadores II (Gráficos de Hit/Miss e Boxplot de Cache)
+matplotlib>=3.7.0
+numpy>=1.24.0
+
+# Classificação e Pesquisa de Dados - CPD (Trabalho Final MovieLens)
+pandas>=2.0.0

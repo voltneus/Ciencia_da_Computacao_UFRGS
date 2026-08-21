@@ -1,0 +1,64 @@
+# ==============================================================================
+# Ciência da Computação - UFRGS | .gitignore
+# ==============================================================================
+
+# Executáveis e Binários Compilados
+*.exe
+*.o
+*.obj
+*.dll
+*.so
+*.dylib
+*.out
+*.app
+*.bin
+# Exceção para arquivos binários essenciais de dados/jogos:
+!**/leaderboard.bin
+
+# Arquivos de Backup e Temporários de Editores
+*.save
+*.bak
+*.swp
+*.swo
+*~
+tempCodeRunnerFile.*
+*.tmp
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.pytest_cache/
+.coverage
+htmlcov/
+venv/
+.venv/
+env/
+.env
+
+# Intel Quartus Prime / ModelSim / EDA
+*.qws
+db/
+incremental_db/
+simulation/
+output_files/
+hc_output/
+.qsys_edit/
+*.rpt
+*.done
+*.pin
+*.sof
+*.pof
+*.summary
+
+# IDEs e Editores de Código
+.vscode/
+.idea/
+*.cbp.mak
+*.layout
+*.depend
+
+# Arquivos do Sistema Operacional
+.DS_Store
+Thumbs.db
+desktop.ini
