@@ -1,0 +1,8 @@
+pandas 
+altair 
+statsmodels
+vega_datasets 
+scikit-learn 
+numpy
+matplotlib
+seaborn

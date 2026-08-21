@@ -6,7 +6,7 @@
 ![Curso](https://img.shields.io/badge/Curso-Ci%C3%AAncia%20da%20Computa%C3%A7%C3%A3o-blue?style=for-the-badge&logo=codeforces)
 ![Status](https://img.shields.io/badge/Status-Em%20Andamento-success?style=for-the-badge)
 ![Licença](https://img.shields.io/badge/Licen%C3%A7a-MIT-green?style=for-the-badge)
-![Linguagens](https://img.shields.io/badge/Linguagens-C%20%7C%20C%2B%2B%20%7C%20Python%20%7C%20Verilog%20%7C%20Racket%20%7C%20x86-orange?style=for-the-badge)
+![Linguagens](https://img.shields.io/badge/Linguagens-C%20%7C%20C%2B%2B%20%7C%20Python%20%7C%20Java%20%7C%20SQL%20%7C%20Verilog%20%7C%20RISC--V-orange?style=for-the-badge)
 
 <p align="center">
   <b>Repositório com os trabalhos práticos, listas de exercícios, simulações e projetos desenvolvidos durante o curso de Bacharelado em Ciência da Computação no Instituto de Informática (INF) da Universidade Federal do Rio Grande do Sul (UFRGS).</b>
@@ -60,48 +60,73 @@ Abaixo encontra-se a divisão por semestres e disciplinas, com links diretos par
 
 ---
 
+### [4º Semestre (2026/1)](./4_Quarto_Semestre)
+> Engenharia de software moderna, modelagem de bancos de dados relacionais, cálculo numérico computacional, ciência de dados/machine learning, processadores RISC-V com simulação arquitetural no gem5, concorrência e sistemas de arquivos no kernel Linux.
+
+| Disciplina | Código | Conteúdos Principais | Tecnologias |
+| :--- | :---: | :--- | :--- |
+| **[Bancos de Dados](./4_Quarto_Semestre/Bancos_de_Dados)** | INF01145 | Modelagem E/R, DDL, DML, consultas analíticas e parser de dados | `PostgreSQL`, `SQL`, `Python` |
+| **[Cálculo Numérico](./4_Quarto_Semestre/Calculo_Numerico)** | MAT01169 | Raízes, sistemas lineares/não-lineares, Simpson, interpolação e MMQ | `Python 3`, `NumPy` |
+| **[Ciência de Dados I](./4_Quarto_Semestre/Ciencia_de_Dados)** | INF01057 | EDA, pré-processamento, regressão, árvores, Random Forest e CatBoost | `Python`, `Pandas`, `CatBoost` |
+| **[Desenvolvimento de Software](./4_Quarto_Semestre/Desenvolvimento_de_Software)** | INF01120 | Testes unitários com JUnit 5, cobertura JaCoCo, Docker, Spring Boot e UML | `Java 17+`, `Spring`, `Docker` |
+| **[Organização de Computadores B](./4_Quarto_Semestre/Organizacao_de_Computadores)** | INF01113 | Processador RISC-V RV32I e simulação de microarquitetura no gem5 | `RISC-V`, `gem5`, `C`, `Python` |
+| **[Projeto e Análise de Algoritmos](./4_Quarto_Semestre/Projeto_e_Analise_de_Algoritmos)** | INF05515 | Divisão e conquista, PD, gulosos, grafos e NP-completude ([Repo Externo](https://github.com/vitorsfeijo/paa)) | `Algoritmos`, `Teoria` |
+| **[Sistemas Operacionais I](./4_Quarto_Semestre/Sistemas_Operacionais)** | INF01151 | Comunicação IPC (pipes/sinais), Pthreads/concorrência e SOFS (Filesystem) | `C`, `POSIX Threads`, `FUSE` |
+
+---
+
 ## 💻 Tecnologias & Ferramentas
 
 <table>
   <tr>
-    <td align="center" width="120">
-      <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/c/c-original.svg" width="40" height="40" alt="C" /><br />
+    <td align="center" width="100">
+      <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/c/c-original.svg" width="36" height="36" alt="C" /><br />
       <b>C</b>
     </td>
-    <td align="center" width="120">
-      <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/cplusplus/cplusplus-original.svg" width="40" height="40" alt="C++" /><br />
+    <td align="center" width="100">
+      <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/cplusplus/cplusplus-original.svg" width="36" height="36" alt="C++" /><br />
       <b>C++</b>
     </td>
-    <td align="center" width="120">
-      <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/python/python-original.svg" width="40" height="40" alt="Python" /><br />
+    <td align="center" width="100">
+      <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/python/python-original.svg" width="36" height="36" alt="Python" /><br />
       <b>Python 3</b>
     </td>
-    <td align="center" width="120">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Racket-logo.svg" width="40" height="40" alt="Racket" /><br />
-      <b>Racket</b>
+    <td align="center" width="100">
+      <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/java/java-original.svg" width="36" height="36" alt="Java" /><br />
+      <b>Java</b>
     </td>
-    <td align="center" width="120">
-      <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/embeddedc/embeddedc-original.svg" width="40" height="40" alt="Verilog" /><br />
-      <b>Verilog HDL</b>
+    <td align="center" width="100">
+      <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/postgresql/postgresql-original.svg" width="36" height="36" alt="PostgreSQL" /><br />
+      <b>PostgreSQL</b>
     </td>
-    <td align="center" width="120">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Raylib_logo.png/120px-Raylib_logo.png" width="40" height="40" alt="Raylib" /><br />
-      <b>Raylib</b>
+    <td align="center" width="100">
+      <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/docker/docker-original.svg" width="36" height="36" alt="Docker" /><br />
+      <b>Docker</b>
+    </td>
+    <td align="center" width="100">
+      <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/spring/spring-original.svg" width="36" height="36" alt="Spring" /><br />
+      <b>Spring</b>
+    </td>
+    <td align="center" width="100">
+      <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/embeddedc/embeddedc-original.svg" width="36" height="36" alt="Verilog" /><br />
+      <b>Verilog</b>
     </td>
   </tr>
 </table>
 
-- **Simuladores & Ferramentas Acadêmicas**: Intel Quartus Prime, JFLAP, Simulador Neander, Simulador Ahmes, Simulador Ramses, Simulador César, DrRacket.
-- **Compiladores & Ambientes**: GCC/Clang, G++, NASM/MASM, Python Virtualenv, Code::Blocks.
+- **Simuladores & Ferramentas**: gem5 Architectural Simulator, Intel Quartus Prime, JFLAP, DrRacket, Simuladores Didáticos UFRGS (Neander, Ahmes, Ramses, César).
+- **Compiladores & Ambientes**: GCC/G++, Clang, OpenJDK 17+, Maven, Python Virtualenv, Jupyter Notebook.
 
 ---
 
 ## 🚀 Destaques dos Projetos
 
 - 🎮 **[Jogo 2D com Raylib (Algoritmos e Programação)](./1_Primeiro_Semestre/Algoritmos_e_Programacao/Vitor_Feijo_E_Gabriel_Nunes)**: Jogo de nave/jetpack desenvolvido em C com rolagem lateral contínua, geração e leitura de mapas por arquivos de texto, controle de física/gravidade e persistência de leaderboard em arquivo binário.
-- ⚡ **[Processador SACI em Verilog (Circuitos Digitais)](./3_Terceiro_Semestre/Circuitos_Digitais/Saci_Vitor)**: Implementação completa em HDL do processador didático SACI, incluindo ULA parametrizada, decodificador de instruções, máquina de estados finitos (Moore/Mealy), banco de registradores e exibição em display de 7 segmentos.
-- 🎬 **[Sistema de Busca de Filmes e Tags (CPD)](./3_Terceiro_Semestre/Classificacao_e_Pesquisa_de_Dados/Trabalho_Final)**: Aplicação desktop completa desenvolvida em Python com GUI em Tkinter. Utiliza uma **Árvore Trie** para autocompletar e busca eficiente por prefixo de títulos, e múltiplas **Tabelas Hash com endereçamento fechado/aberto** para indexar avaliações, gêneros e tags do dataset MovieLens.
-- 🧠 **[Simulador de Memória Cache (Arquitetura II)](./3_Terceiro_Semestre/Arquitetura_de_Computadores_2/Trabalho_1)**: Simulador flexível em C++ com suporte a diferentes tamanhos de bloco, associatividade e políticas de substituição, acompanhado de scripts em Python para geração de curvas estatísticas de Hit/Miss e Boxplots de desempenho.
+- ⚡ **[Processador SACI em Verilog (Circuitos Digitais)](./3_Terceiro_Semestre/Circuitos_Digitais/Saci_Vitor)**: Implementação completa em HDL do processador didático SACI, incluindo ULA parametrizada, decodificador de instruções, FSM (Moore/Mealy), banco de registradores e display de 7 segmentos.
+- 🎬 **[Sistema de Busca de Filmes e Tags (CPD)](./3_Terceiro_Semestre/Classificacao_e_Pesquisa_de_Dados/Trabalho_Final)**: Aplicação desktop em Python (GUI Tkinter) combinando **Árvore Trie** para autocompletar títulos e **Tabelas Hash** para indexar avaliações, gêneros e tags do dataset MovieLens.
+- 🗄️ **[Banco de Dados Relacional Steam (Bancos de Dados)](./4_Quarto_Semestre/Bancos_de_Dados)**: Modelagem relacional completa em PostgreSQL para o ecossistema de jogos, contendo DDL com constraints estritas, DML populado via parser Python JSON e dezenas de consultas analíticas avançadas.
+- 🖥️ **[Processador RISC-V e Simulação gem5 (Org. Computadores)](./4_Quarto_Semestre/Organizacao_de_Computadores)**: Implementação do datapath RV32I e estudo microarquitetural com o simulador **gem5**, avaliando o impacto de caches L1/L2, preditores de desvio e latência de memória sob benchmarks em C.
+- 🐧 **[Sistema de Arquivos SOFS & Pthreads (Sistemas Operacionais)](./4_Quarto_Semestre/Sistemas_Operacionais)**: Implementação em C de um sistema de arquivos baseado em inodes/blocos e resolução de concorrência multithread com Pthreads e semáforos.
 
 ---
 
@@ -110,21 +135,27 @@ Abaixo encontra-se a divisão por semestres e disciplinas, com links diretos par
 ```
 Ciencia_da_Computacao_UFRGS/
 ├── 1_Primeiro_Semestre/
-│   ├── Algoritmos_e_Programacao/
-│   │   ├── Fatorial.c
-│   │   └── Vitor_Feijo_E_Gabriel_Nunes/      # Jogo 2D com Raylib
+│   ├── Algoritmos_e_Programacao/              # C e Jogo 2D com Raylib
 │   ├── Fundamentos_de_Algoritmos/             # Listas 1-4, Árvores e Provas em Racket
 │   └── Introducao_a_Arquitetura_de_Computacao/ # Trabalhos Neander e Ahmes
 ├── 2_Segundo_Semestre/
 │   ├── Arquitetura_de_Computadores_1/         # Trabalhos Ramses, Cesar e Intel x86
 │   ├── Estrutura_de_Dados/                    # Listas Encadeadas e Circulares em C
 │   └── Outros/                                # Calculadora de Combinatória em C
-└── 3_Terceiro_Semestre/
-    ├── Arquitetura_de_Computadores_2/         # Simulador Cache C++ e Relatórios
-    ├── Circuitos_Digitais/                    # Projetos Verilog Quartus (Saci, Somadores)
-    ├── Classificacao_e_Pesquisa_de_Dados/     # Labs C++ e Trabalho Final Trie/Hash
-    ├── Linguagens_Formais_e_Automatos/        # Modelagem JFLAP (DFA, GLC, Pilha)
-    └── Teoria_da_Computacao/                  # Norma, Cálculo Lambda, Turing e Reduções
+├── 3_Terceiro_Semestre/
+│   ├── Arquitetura_de_Computadores_2/         # Simulador Cache C++ e Relatórios
+│   ├── Circuitos_Digitais/                    # Projetos Verilog Quartus (Saci, Somadores)
+│   ├── Classificacao_e_Pesquisa_de_Dados/     # Labs C++ e Trabalho Final Trie/Hash
+│   ├── Linguagens_Formais_e_Automatos/        # Modelagem JFLAP (DFA, GLC, Pilha)
+│   └── Teoria_da_Computacao/                  # Norma, Cálculo Lambda, Turing e Reduções
+└── 4_Quarto_Semestre/
+    ├── Bancos_de_Dados/                     # Projeto Relacional PostgreSQL (Steam)
+    ├── Calculo_Numerico/                    # Implementações de Métodos Numéricos Python
+    ├── Ciencia_de_Dados/                    # Labs 1-6 de EDA e Machine Learning (CatBoost)
+    ├── Desenvolvimento_de_Software/         # Java, Spring Boot, Testes JUnit, Docker e UML
+    ├── Organizacao_de_Computadores/         # Processador RISC-V e Simulação gem5
+    ├── Projeto_e_Analise_de_Algoritmos/     # Paradigmas de Algoritmos (Link Repo PAA)
+    └── Sistemas_Operacionais/               # Labs C de IPC, Threads e Filesystem SOFS
 ```
 
 ---

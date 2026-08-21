@@ -1,0 +1,69 @@
+Tables created as a simplification of Steam:
+
+    Base Tables:
+
+1. Game:
+  codgame - primary key
+  gamename
+  price
+  description
+  launch_date
+  estimated_owners
+  positive_reviews
+  negative_reviews
+  average_play_time
+
+2. GameUser:
+  coduser - primary key
+  username
+  email
+  password_hash
+  wallet_balance
+  birth_date
+  birth_name
+
+3. Developer:
+  coddev - primary key
+  devname
+
+4. Tag:
+  codtag - primary key
+  nametag
+
+
+    Association Tables:
+
+5. GameDeveloper:
+  codgame - primary key, foreign key
+  coddev - primary key, foreign key
+
+6. GameTag:
+  codgame - primary key, foreign key
+  codtag - primary key, foreign key
+
+
+    Dependent Tables:
+
+7. Reviews:
+  coduser - primary key, foreign key
+  codgame - primary key, foreign key
+  ispositive
+  review
+
+8. Screenshot:
+  codgame - primary key, foreign key
+  screenshot_url - primary key
+
+
+    User Tables:
+
+9. GameLibrary:
+  codgame - primary key, foreign key
+  coduser - primary key, foreign key
+  purchase_date
+  playtime
+
+10. Friends:
+  friend_requester - primary key, foreign key
+  friend_receiver - primary key, foreign key
+  status

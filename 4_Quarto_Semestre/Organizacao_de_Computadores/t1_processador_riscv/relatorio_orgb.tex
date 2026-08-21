@@ -1,0 +1,102 @@
+\documentclass{article}
+\usepackage{graphicx} % Required for inserting images
+
+\title{Relatório Trabalho 1 OrgB}
+\author{Arthur Padilha, Johann Hardt, Tobias Marion, Vítor Feijó}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section{Implementação do JAL}
+A implementação da instrução JAL foi feita ao incluir o caminho de dados para ``rd = PC+4, PC+=imm" e/ou alterando o bloco de controle, conforme o necessário.
+
+\subsection{Monociclo}
+No monociclo, foi usado um comparador com o valor do opcode para gerar o sinal ``Jump and Link", que serve de seletor para os multiplexadores de dados de escrita PC e rd. Também foi alterado o bloco de controle (ROM), para gerar os sinais de controle adequados para o opcode da instrução JAL.
+
+\subsection{Multiciclo}
+No multiciclo, os caminhos de dados foram reaproveitados; o incremento de PC (PC += 4) já estava sendo realizado na ALU, cuja saída já possuía caminho para PC e rd. Assim, foi ajustada somente a FSM do bloco de controle, adicionando um estado novo onde é escrito PC+4 em rd.
+
+\subsection{Pipeline}
+No pipeline, similarmente a como foi feito no monociclo, foi usado um comparador para gerar o sinal ``JAL". O sinal é propagado pelos estágios do pipeline via registradores, e rege a escrita de ``PC += imm" no PC (em ``OR" com a condição branch), assim como ``rd = PC+4" no último estágio.
+
+\section{Implementação do BLT}
+A estratégia geral para a implementação da instrução \texttt{BLT} (Branch if Less Than) consistiu em utilizar a Unidade Lógica e Aritmética (ALU) para realizar uma subtração ($rs1 - rs2$) e verificar o bit de sinal do resultado. Como a arquitetura RISC-V utiliza complemento de dois, um resultado negativo — indicando que $rs1 < rs2$ — possui obrigatoriamente o bit mais significativo (bit 31) em nível lógico alto. Para capturar essa condição, adicionou-se um \textit{splitter} na saída de 32 bits da ALU para isolar o bit 31, criando a flag customizada \texttt{isNegative}. Um multiplexador foi então inserido para selecionar entre a flag \texttt{Zero} (utilizada pelo \texttt{BEQ}) e a nova flag \texttt{isNegative}, utilizando o bit 2 do campo \texttt{funct3} da instrução como sinal de controle para definir qual condição de salto deve ser enviada para a lógica de desvio.
+
+\subsection{Organização Monociclo}
+No processador monociclo, a implementação foi realizada integrando o multiplexador de seleção de flag diretamente ao caminho de dados entre a ALU e a porta AND que controla o sinal de \textit{branch}. Como a instrução é executada em um único ciclo, o bit 2 do \texttt{funct3} extraído da memória de instruções roteia instantaneamente a flag correta para a lógica de controle, permitindo que o PC seja atualizado com o endereço de destino do salto no exato momento em que a ALU estabiliza o resultado da operação aritmética.
+
+\subsection{Organização Multiciclo}
+Na organização multiciclo, a implementação exigiu a sincronização com a máquina de estados, onde o campo \texttt{funct3} deve ser lido a partir do \textit{Instruction Register} (IR). A decisão do salto ocorre no terceiro ciclo (Execução), onde a ALU realiza a subtração e a flag \texttt{isNegative} é selecionada pelo multiplexador. Caso a condição seja verdadeira, a porta AND ativa o sinal \texttt{PCWriteCond}, forçando o PC a carregar o endereço de destino que foi previamente calculado no ciclo de decodificação e armazenado no registrador intermediário \texttt{ALUOut}.
+
+\subsection{Organização Pipeline}
+No pipeline, a estratégia foi adaptada para respeitar a divisão de estágios e evitar conflitos de temporização. O multiplexador de seleção e a geração da flag \texttt{isNegative} foram posicionados no estágio \textbf{EX} (Execução), logo após a ALU. O resultado dessa comparação (um único bit indicando se a condição de "menor que" foi atendida) é armazenado no registrador de barreira EX/MEM e propagado para o estágio \textbf{MEM} (Memória). Somente neste estágio a porta AND de desvio é acionada, utilizando o bit propagado para validar o salto e atualizar o multiplexador do PC no início do pipeline.
+
+\section{Instrução LB (\textit{Load Byte})}
+
+A instrução \texttt{LB} possui opcode \texttt{0000011} e \texttt{funct3 = 000}. Os sinais de controle são idênticos ao \texttt{LW}, portanto a unidade de controle não precisa ser modificada. A única diferença é que \texttt{LB} lê apenas os 8 bits menos significativos da memória e realiza extensão de sinal para 32 bits antes de escrever no registrador destino.
+
+\subsection*{Componente adicionado: SignExtend8}
+
+Subcircuito criado no Logisim com entrada de 32 bits e saída de 32 bits. Internamente, os bits 7--0 da entrada são extraídos via Splitter. O bit 7 é então replicado nas posições 8 a 31 da saída (extensão de sinal), e os bits 7--0 originais são mantidos. Implementado com dois Splitters: um para separar os bits 7--0 do restante e outro para montar os 32 bits de saída com o sinal estendido.
+
+\subsection*{Monociclo}
+
+\begin{enumerate}
+    \item Adicionar Splitter na saída da Instruction Memory para extrair \texttt{funct3} (bits 14--12).
+    \item Conectar a saída de 32 bits da Data Memory ao subcircuito SignExtend8.
+    \item Adicionar porta NOR de 3 entradas recebendo \texttt{funct3}. Saída = 1 quando \texttt{funct3 = 000} (LB).
+    \item Adicionar MUX entre a Data Memory e o MUX MemToReg:
+    \begin{itemize}
+        \item Entrada 0: saída de 32 bits da Data Memory (LW)
+        \item Entrada 1: saída do SignExtend8 (LB)
+        \item Select: saída da porta NOR
+    \end{itemize}
+\end{enumerate}
+
+\subsection*{Multiciclo}
+
+\begin{enumerate}
+    \item Adicionar Splitter no IR para extrair \texttt{funct3} (bits 14--12).
+    \item Conectar a saída de 32 bits do MDR ao subcircuito SignExtend8.
+    \item Adicionar porta NOR de 3 entradas recebendo \texttt{funct3}.
+    \item Adicionar MUX entre o MDR e o MUX MemToReg:
+    \begin{itemize}
+        \item Entrada 0: saída de 32 bits do MDR (LW)
+        \item Entrada 1: saída do SignExtend8 (LB)
+        \item Select: saída da porta NOR
+    \end{itemize}
+\end{enumerate}
+
+\subsection*{Pipeline}
+
+\begin{enumerate}
+    \item Propagar \texttt{funct3} (bits 14--12 da instrução) pelos registradores de pipeline IF/ID $\to$ ID/EX $\to$ EX/MEM $\to$ MEM/WB.
+    \item Conectar a saída de 32 bits da Data Memory ao subcircuito SignExtend8.
+    \item Adicionar porta NOR de 3 entradas recebendo o \texttt{funct3} propagado até MEM/WB.
+    \item Adicionar MUX entre a Data Memory e o registrador MEM/WB:
+    \begin{itemize}
+        \item Entrada 0: saída de 32 bits da Data Memory (LW)
+        \item Entrada 1: saída do SignExtend8 (LB)
+        \item Select: saída da porta NOR
+    \end{itemize}
+\end{enumerate}
+
+\section{Implementação da Instrução SRA}
+
+A implementação da instrução SRA (Shift Right Arithmetic) exigiu modificações em somente dois módulos principais, independente do tipo do processador(monociclo, multiciclo ou pipeline):
+
+\subsection{Unidade de Controle da ALU (ALUControl)}
+Foi adicionada a lógica para decodificar uma nova combinação de \texttt{funct3} e \texttt{funct7}. A nova operação é selecionada conforme a regra:
+\begin{itemize}
+    \item \textbf{funct3:} \texttt{0x5} (101)
+    \item \textbf{funct7:} \texttt{0x20} (0100000)
+    \item \textbf{Saída(AluOp):} \texttt{0x5} (101)
+\end{itemize}
+
+\subsection{Unidade Lógica e Aritmética (ALU)}
+Na ALU, implementou-se o suporte ao deslocamento aritmético. Utilizou-se o componente nativo de \textit{shifter} do Logisim, configurado para o modo aritmético quando o seletor da ALU recebe o código \texttt{101}.
+
+
+\end{document}

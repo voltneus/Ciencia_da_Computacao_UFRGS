@@ -12,8 +12,20 @@
 *.out
 *.app
 *.bin
-# Exceção para arquivos binários essenciais de dados/jogos:
+# Exceções para arquivos binários e bibliotecas estáticas didáticas essenciais:
 !**/leaderboard.bin
+!**/lib/apidisk.o
+!**/lib/bitmap2.o
+!**/lib/libsofs.a
+
+# Java, Maven & Gradle
+*.class
+*.jar
+*.war
+*.ear
+target/
+.gradle/
+build/
 
 # Arquivos de Backup e Temporários de Editores
 *.save
@@ -24,7 +36,7 @@
 tempCodeRunnerFile.*
 *.tmp
 
-# Python
+# Python & Machine Learning
 __pycache__/
 *.py[cod]
 *$py.class
@@ -35,6 +47,7 @@ venv/
 .venv/
 env/
 .env
+catboost_info/
 
 # Intel Quartus Prime / ModelSim / EDA
 *.qws
@@ -57,6 +70,7 @@ hc_output/
 *.cbp.mak
 *.layout
 *.depend
+*.code-workspace
 
 # Arquivos do Sistema Operacional
 .DS_Store

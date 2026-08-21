@@ -1,0 +1,101 @@
+id_transacao,cliente,valor,categoria,localidade,data_hora
+T001,Roberto Justo,8000.00,Alimentacao,Brasil,2026-03-23T22:59:00
+T002,Ana Silva,8000.01,Farmacia,Brasil,2026-03-23T14:00:00
+T003,Carlos Eduardo,500.00,Vestuario,EUA,2026-03-23T10:00:00
+T004,Beatriz Lima,1200.00,Joalheria,Brasil,2026-03-23T16:30:00
+T005,Marcos Paiva,50.00,Transporte,Brasil,2026-03-23T23:00:00
+T006,Fernanda Costa,15.00,Transporte,Brasil,2026-03-23T05:00:00
+T007,Lucas Alves,20.00,Transporte,Brasil,2026-03-23T05:01:00
+T008,Gabriel Knopp,9500.00,Eletronicos,Brasil,2026-03-23T15:45:00
+T009,Desconhecido,450.00,Cassino,Internacional,2026-03-23T18:00:00
+T010,Maria Oliveira,15000.00,Joalheria,Europa,2026-03-23T02:15:00
+T011,Julia Lima,2066.34,Farmacia,Brasil,2026-03-28T10:47:06
+T012,Pedro Alves,3167.30,Alimentacao,Brasil,2026-03-27T08:13:14
+T013,Lucas Souza,5371.57,Transporte,Brasil,2026-03-27T02:14:28
+T014,Ana Souza,11932.68,Servicos,EUA,2026-03-25T08:09:13
+T015,Ricardo Lima,2695.55,Vestuario,Brasil,2026-03-28T14:51:02
+T016,Carlos Alves,6917.60,Alimentacao,Brasil,2026-03-27T15:53:40
+T017,Desconhecido,5285.77,Servicos,EUA,2026-03-24T15:05:54
+T018,Desconhecido,3403.31,Servicos,Brasil,2026-03-25T17:10:23
+T019,Marcos Knopp,7025.23,Lazer,Brasil,2026-03-24T08:38:40
+T020,Fernanda,3469.64,Vestuario,Brasil,2026-03-23T13:43:20
+T021,Marcos Souza,17125.04,Farmacia,Internacional,2026-03-25T18:56:45
+T022,Marcos Knopp,6635.70,Supermercado,Brasil,2026-03-24T00:16:08
+T023,Pedro Alves,5603.87,Cassino,Brasil,2026-03-24T18:23:14
+T024,Fernanda Pereira,358.14,Alimentacao,Brasil,2026-03-28T10:40:10
+T025,Maria Ribeiro,2865.24,Supermercado,Brasil,2026-03-23T22:16:35
+T026,Julia,6636.49,Servicos,Brasil,2026-03-25T14:49:41
+T027,Ricardo Oliveira,3405.66,Lazer,Brasil,2026-03-24T01:32:48
+T028,Fernanda Lima,14916.56,Eletronicos,Argentina,2026-03-24T06:09:23
+T029,Fernanda Alves,21377.31,Joalheria,Brasil,2026-03-25T03:59:23
+T030,Marcos Souza,4257.34,Alimentacao,Brasil,2026-03-23T08:46:31
+T031,Camila Alves,11260.42,Joalheria,Argentina,2026-03-27T05:16:33
+T032,Maria Silva,24738.20,Supermercado,Japao,2026-03-28T09:25:42
+T033,João Pereira,18206.95,Supermercado,Internacional,2026-03-27T02:21:01
+T034,Fernanda Silva,58.90,Lazer,Brasil,2026-03-23T23:14:04
+T035,Desconhecido,1788.84,Lazer,Brasil,2026-03-24T21:13:34
+T036,Pedro Ribeiro,1826.26,Eletronicos,Brasil,2026-03-28T12:06:06
+T037,Maria Santos,3505.35,Alimentacao,Brasil,2026-03-23T04:41:41
+T038,Gabriel Costa,25712.74,Farmacia,Internacional,2026-03-26T06:12:34
+T039,Beatriz Costa,3472.40,Servicos,Brasil,2026-03-27T08:28:51
+T040,Ricardo Souza,4056.71,Servicos,Internacional,2026-03-26T13:10:26
+T041,Carlos Silva,27902.52,Vestuario,Europa,2026-03-26T00:24:16
+T042,Ana Costa,5480.14,Lazer,Brasil,2026-03-24T04:31:09
+T043,Ana Silva,20952.38,Eletronicos,Brasil,2026-03-23T23:20:03
+T044,Lucas Pereira,6396.14,Transporte,Internacional,2026-03-23T08:54:11
+T045,Lucas Lima,1767.85,Farmacia,Japao,2026-03-26T07:39:05
+T046,Julia Ribeiro,2376.19,Joalheria,Brasil,2026-03-26T16:15:16
+T047,Beatriz Knopp,3431.90,Supermercado,Internacional,2026-03-24T09:04:34
+T048,Fernanda Oliveira,2620.82,Alimentacao,Brasil,2026-03-24T13:23:18
+T049,Carlos Alves,21651.07,Eletronicos,Brasil,2026-03-25T21:52:35
+T050,Julia Lima,11387.26,Farmacia,Brasil,2026-03-25T23:35:09
+T051,Ana Ribeiro,2574.89,Lazer,Brasil,2026-03-25T14:32:31
+T052,Desconhecido,3179.70,Vestuario,Brasil,2026-03-24T07:00:21
+T053,Julia Oliveira,3316.56,Lazer,Brasil,2026-03-23T19:35:00
+T054,Ricardo,20230.19,Lazer,Argentina,2026-03-24T17:09:27
+T055,Gabriel Oliveira,6998.49,Servicos,Brasil,2026-03-24T07:57:22
+T056,Julia Silva,2655.82,Servicos,Brasil,2026-03-24T02:39:47
+T057,Marcos Paiva,25931.59,Servicos,Brasil,2026-03-25T05:47:59
+T058,Camila Costa,27077.38,Supermercado,EUA,2026-03-23T05:50:44
+T059,Maria Souza,13282.32,Joalheria,EUA,2026-03-24T09:52:50
+T060,Marcos Souza,2991.50,Joalheria,Brasil,2026-03-27T14:22:41
+T061,Maria Knopp,20028.64,Alimentacao,Brasil,2026-03-25T08:11:37
+T062,Gabriel Lima,2595.92,Eletronicos,Brasil,2026-03-27T22:07:24
+T063,Marcos Oliveira,3273.25,Transporte,Brasil,2026-03-23T12:23:27
+T064,Julia Santos,4977.09,Transporte,Europa,2026-03-25T15:42:26
+T065,Maria,959.02,Supermercado,Brasil,2026-03-24T18:43:47
+T066,Lucas Ribeiro,4111.79,Alimentacao,Brasil,2026-03-26T15:18:13
+T067,Camila Ribeiro,2420.26,Eletronicos,Brasil,2026-03-28T12:32:30
+T068,Beatriz Knopp,3868.31,Lazer,Brasil,2026-03-24T16:05:52
+T069,Julia Oliveira,1497.48,Alimentacao,Brasil,2026-03-27T07:15:30
+T070,Desconhecido,6646.60,Farmacia,Brasil,2026-03-26T04:44:24
+T071,Maria Silva,5158.73,Servicos,Brasil,2026-03-24T09:49:27
+T072,Beatriz,381.39,Supermercado,Internacional,2026-03-28T10:51:29
+T073,Fernanda Alves,7125.55,Cassino,Brasil,2026-03-27T22:27:53
+T074,Carlos Paiva,18705.50,Transporte,Internacional,2026-03-27T20:17:49
+T075,Carlos Knopp,3301.85,Lazer,Brasil,2026-03-25T15:15:17
+T076,João Alves,1135.48,Supermercado,Brasil,2026-03-23T10:45:13
+T077,Maria Costa,3497.10,Alimentacao,Brasil,2026-03-26T12:53:26
+T078,Camila Ribeiro,8919.94,Cassino,Europa,2026-03-25T15:00:22
+T079,Camila Costa,28998.75,Servicos,Argentina,2026-03-27T23:47:34
+T080,Marcos Pereira,3271.59,Alimentacao,Brasil,2026-03-28T18:21:42
+T081,Camila Costa,26570.87,Vestuario,Argentina,2026-03-26T17:01:58
+T082,Lucas Ribeiro,634.19,Joalheria,Brasil,2026-03-25T20:11:03
+T083,Maria Santos,2454.71,Servicos,Brasil,2026-03-26T18:17:48
+T084,Ana Lima,5618.94,Farmacia,Europa,2026-03-23T08:49:41
+T085,Camila Souza,12786.25,Alimentacao,Argentina,2026-03-26T04:15:08
+T086,Julia Lima,1638.64,Vestuario,Brasil,2026-03-27T05:23:10
+T087,Lucas,25222.53,Vestuario,EUA,2026-03-25T03:37:01
+T088,Lucas Knopp,16569.10,Supermercado,Brasil,2026-03-28T18:44:53
+T089,Marcos Lima,2265.36,Transporte,Brasil,2026-03-27T05:07:50
+T090,Camila Souza,3215.69,Vestuario,Brasil,2026-03-25T08:32:41
+T091,Gabriel Costa,10769.09,Lazer,Japao,2026-03-26T14:45:09
+T092,Beatriz,4880.18,Servicos,Brasil,2026-03-26T03:49:30
+T093,Maria,2420.67,Vestuario,Internacional,2026-03-26T20:15:48
+T094,Lucas Ribeiro,2526.29,Eletronicos,Brasil,2026-03-25T11:31:13
+T095,Camila Oliveira,6603.00,Lazer,Brasil,2026-03-27T14:35:00
+T096,Marcos Lima,3051.18,Transporte,Brasil,2026-03-28T13:44:30
+T097,Pedro Pereira,134.24,Joalheria,Brasil,2026-03-25T18:44:15
+T098,Julia Ribeiro,4153.28,Vestuario,Brasil,2026-03-25T19:47:35
+T099,João,2303.14,Lazer,Internacional,2026-03-28T12:20:07
+T100,Fernanda,1626.80,Supermercado,Brasil,2026-03-27T14:46:37

@@ -1,0 +1,4 @@
+tipoBolsa,mediaMinima,limiteFaltas,exigeRendaBaixa,rendaMaxima
+IniciacaoCientifica,8.5,3,false,0.0
+Extensao,7.5,4,false,0.0
+AuxilioPermanencia,7.0,5,true,2500.0
